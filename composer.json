@@ -1,0 +1,12 @@
+{
+    "name": "m4nu/ansible",
+    "authors": [
+        {
+            "name": "Emmanuel Vella",
+            "email": "vella.emmanuel@gmail.com"
+        }
+    ],
+    "require": {
+
+    }
+}

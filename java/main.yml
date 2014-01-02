@@ -1,0 +1,7 @@
+---
+  - hosts: db
+
+    tasks:
+      - name: java | install
+        apt: pkg=openjdk-7-jre state=latest
+        tags: java

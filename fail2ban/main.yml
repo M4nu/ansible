@@ -1,0 +1,7 @@
+---
+  - hosts: web
+
+    tasks:
+      - name: fail2ban | install
+        apt: pkg=fail2ban state=installed
+        tags: fail2ban

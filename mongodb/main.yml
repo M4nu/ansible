@@ -1,0 +1,29 @@
+---
+  - hosts: db
+
+    tasks:
+      - name: mongodb | install prerequisites
+        apt: pkg=python-apt
+        tags: mongodb
+
+      - name: mongodb | add repository
+        apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen'
+        tags: mongodb
+
+      - name: mongodb | install key
+        apt_key: id=7F0CEB10 url=http://docs.mongodb.org/10gen-gpg-key.asc
+        tags: mongodb
+
+      - name: mongodb | install
+        apt: pkg=mongodb-10gen update_cache=yes force=yes
+        ignore_errors: true
+        notify: restart mongodb
+        tags: mongodb
+
+      - name: mongodb | create db directory
+        file: dest=/data/db state=directory owner=mongodb group=mongodb
+        tags: mongodb
+
+    handlers:
+      - name: restart mongodb
+        service: name=mongodb state=restarted

@@ -1,0 +1,15 @@
+---
+  - hosts: all
+
+    tasks:
+      - name: apt | install packages
+        apt: pkg={{ item }} update_cache=yes
+        with_items:
+           - git
+           - htop
+           - vim
+           - locales-all
+           - python-pycurl
+           - bash-completion
+           - sudo
+        tags: apt

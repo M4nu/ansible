@@ -1,0 +1,11 @@
+---
+  - hosts: all
+
+    tasks:
+      - name: supervisor | install prerequisites
+        apt: pkg=python-setuptools
+        tags: supervisor
+
+      - name: supervisor | install
+        easy_install: name=supervisor
+        tags: supervisor

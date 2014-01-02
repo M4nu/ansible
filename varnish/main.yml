@@ -1,0 +1,32 @@
+---
+  - hosts: web
+
+    tasks:
+      - name: varnish | install prerequisites
+        apt: pkg=python-apt
+        tags: varnish
+
+      - name: varnish | install key
+        apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
+        tags: varnish
+
+      - name: varnish | add repository
+        apt_repository: repo='deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0'
+        tags: varnish
+
+      - name: varnish | install
+        apt: pkg=varnish update_cache=yes
+        notify: restart varnishe
+        tags: varnish
+
+      - name: varnish | configure
+        copy: src=files/default.vcl dest=/etc/varnish/default.vcl backup=yes
+        notify: reload varnish
+        tags: varnish
+
+    handlers:
+      - name: restart varnish
+        service: name=varnish state=restarted
+
+      - name: reload varnish
+        service: name=varnish state=reloaded

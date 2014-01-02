@@ -1,0 +1,36 @@
+---
+  - hosts: db
+
+    tasks:
+      - name: mysql | install python-mysqldb
+        apt: pkg=python-mysqldb
+        tags: mysql
+
+      - name: mysql | install
+        apt: pkg=mysql-server
+        notify: restart mysql
+        tags: mysql
+
+      - name: mysql | update root password for all root accounts from local servers
+        mysql_user: name=root host={{ item }} password=''
+        with_items:
+          - $ansible_hostname
+          - 127.0.0.1
+          - ::1
+          - localhost
+        tags: mysql
+
+      - name: mysql | ensure anonymous users are not in the database
+        mysql_user: name='' host={{ item }} state=absent
+        with_items:
+          - localhost
+          - $inventory_hostname
+        tags: mysql
+
+      - name: mysql | remove the test database
+        mysql_db: name=test state=absent
+        tags: mysql
+
+    handlers:
+      - name: restart mysql
+        service: name=mysql state=restarted

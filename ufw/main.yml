@@ -1,0 +1,20 @@
+---
+  - hosts: web
+
+    tasks:
+      - name: ufw | install
+        apt: pkg=ufw
+        tags: ufw
+
+      - name: ufw | reset
+        action: shell ufw --force reset
+        tags: ufw
+
+      - name: ufw | configure
+        action: shell ufw {{ item }}
+        with_items: ${rules}
+        tags: ufw
+
+      - name: ufw | enable
+        action: shell ufw --force enable
+        tags: ufw

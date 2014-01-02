@@ -1,0 +1,53 @@
+---
+  - hosts: web
+
+    tasks:
+      - name: nginx | remove apache2
+        apt: pkg={{ item }} purge=yes state=absent
+        with_items:
+          - apache2-mpm-prefork
+          - apache2-utils
+          - apache2.2-bin
+          - apache2.2-common
+          - libapache2-mod-php5
+        tags:
+          - nginx
+          - apache2
+
+      - name: nginx | install
+        apt: pkg=nginx state=latest update_cache=yes
+        tags: nginx
+
+      - name: nginx | update user
+        lineinfile: dest=/etc/nginx/nginx.conf regexp="^user " line="user vagrant;" backup=yes
+        when: vagrant is defined
+        notify: restart nginx
+        tags: nginx
+
+      - name: nginx | configure
+        lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+        with_items:
+            - { regexp: "^worker_processes", line: "worker_processes auto;" }
+            - { regexp: "server_tokens", line: "        server_tokens off;" }
+        notify: restart nginx
+        tags: nginx
+
+      - name: nginx | disable default virtual host
+        file: dest=/etc/nginx/sites-enabled/default state=absent
+        notify: reload nginx
+        tags: nginx
+
+      - name: nginx | copy symfony2 config file
+        copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
+        tags: nginx
+
+      - name: nginx | create /var/www directory
+        file: dest=/var/www owner=www-data group=www-data state=directory
+        tags: nginx
+
+    handlers:
+      - name: restart nginx
+        action: service name=nginx state=restarted
+
+      - name: reload nginx
+        service: name=nginx state=reloaded

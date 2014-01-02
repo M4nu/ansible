@@ -1,0 +1,16 @@
+---
+  - hosts: web
+
+    tasks:
+      - name: symfony2 | install composer
+        get_url: url=http://getcomposer.org/composer.phar dest=/usr/bin/composer owner=root group=root mode=0755
+        tags: composer
+
+      - name: symfony2 | install php5 extensions
+        apt: pkg={{ item }}
+        with_items:
+          - php5-intl
+          - php5-curl
+        tags:
+          - symfony2
+          - php5
