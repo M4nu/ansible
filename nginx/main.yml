@@ -45,6 +45,10 @@
         file: dest=/var/www owner=www-data group=www-data state=directory
         tags: nginx
 
+      - name: nginx | use bash for www-data
+        command: chsh -s /bin/bash www-data
+        tags: nginx
+
     handlers:
       - name: restart nginx
         action: service name=nginx state=restarted
