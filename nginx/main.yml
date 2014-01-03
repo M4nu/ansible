@@ -49,6 +49,10 @@
         command: chsh -s /bin/bash www-data
         tags: nginx
 
+      - name: nginx | allow www-data to clear opcode
+        lineinfile: "dest=/etc/sudoers state=present regexp='^www-data ALL=' line='www-data ALL= NOPASSWD: /etc/init.d/clear-opcode' validate='visudo -cf %s'"
+        tags: nginx
+
     handlers:
       - name: restart nginx
         action: service name=nginx state=restarted
