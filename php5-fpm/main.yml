@@ -14,7 +14,7 @@
           - { regexp: "expose_php =", line: "expose_php = Off" }
           - { regexp: "memory_limit =", line: "memory_limit = 64M" }
           - { regexp: "display_errors =", line: "display_errors = Off" }
-        notify: restart php5-fpm
+        notify: reload php5-fpm
         tags: php5-fpm
 
       - name: php5-fpm | copy clear-opcode script
@@ -27,11 +27,11 @@
           - { regexp: "^user =", line: "user = vagrant" }
           - { regexp: "^group =", line: "group = vagrant" }
         when: vagrant is defined
-        notify: restart php5-fpm
+        notify: reload php5-fpm
         tags:
           - php5-fpm
           - vagrant
 
     handlers:
-      - name: restart php5-fpm
-        service: name=php5-fpm state=restarted
+      - name: reload php5-fpm
+        service: name=php5-fpm state=reloaded
