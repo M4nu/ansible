@@ -1,0 +1,11 @@
+---
+  - hosts: all
+
+    tasks:
+      - name: postfix | install
+        apt: pkg=postfix state=latest
+        tags: postfix
+
+      - name: postfix | ensure service is running
+        service: name=postfix state=started
+        tags: postfix
