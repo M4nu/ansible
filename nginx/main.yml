@@ -1,5 +1,7 @@
 ---
   - hosts: web
+    vars:
+      upload_max_file_size: 2M
 
     tasks:
       - name: nginx | remove apache2
@@ -16,6 +18,11 @@
 
       - name: nginx | install
         apt: pkg=nginx state=latest update_cache=yes
+        tags: nginx
+
+      - name: nginx | copy config file
+        template: src=files/nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf owner=root group=root mode=0644
+        notify: restart nginx
         tags: nginx
 
       - name: nginx | update user

@@ -1,5 +1,7 @@
 ---
   - hosts: web
+    vars:
+      upload_max_file_size: 2M
 
     tasks:
       - name: php5-fpm | install
@@ -14,6 +16,8 @@
           - { regexp: "expose_php =", line: "expose_php = Off" }
           - { regexp: "memory_limit =", line: "memory_limit = 64M" }
           - { regexp: "display_errors =", line: "display_errors = Off" }
+          - { regexp: "upload_max_filesize =", line: "upload_max_filesize = {{ upload_max_file_size }}" }
+          - { regexp: "post_max_size =", line: "post_max_size = {{ upload_max_file_size }}" }
         notify: restart php5-fpm
         tags: php5-fpm
 
