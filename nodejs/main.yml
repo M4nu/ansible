@@ -10,7 +10,7 @@
     tasks:
       - name: nodejs | check installation
         shell: /usr/bin/test "$(node -v 2> /dev/null)" = v{{ node_version }}
-        register: installed
+        register: wanted_version_installed
         ignore_errors: true
         tags: nodejs
 
@@ -20,32 +20,32 @@
           - make
           - gcc
           - g++
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | download
         get_url: url=http://nodejs.org/dist/v{{ node_version }}/{{ node_tarball }} dest=/tmp/
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | extract
         command: tar zxf {{ node_tarball }} chdir=/tmp
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | configure
         shell: python ./configure --prefix={{ node_path }} chdir=/tmp/{{ node_prefix }}
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | compile
         shell: make chdir=/tmp/{{ node_prefix }}/
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | install
         shell: make install chdir=/tmp/{{ node_prefix }}/
-        when: not installed.rc
+        when: wanted_version_installed.rc == 1
         tags: nodejs
 
       - name: nodejs | add NODE_PATH environment variable
