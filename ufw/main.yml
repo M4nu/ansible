@@ -3,7 +3,7 @@
 
     tasks:
       - name: ufw | install
-        apt: pkg=ufw
+        apt: pkg=ufw state=latest update_cache=yes
         tags: ufw
 
       - name: ufw | reset
@@ -17,4 +17,8 @@
 
       - name: ufw | enable
         action: shell ufw --force enable
+        tags: ufw
+
+      - name: ufw | ensure service is running
+        service: name=ufw state=started
         tags: ufw

@@ -15,15 +15,14 @@
         tags: mongodb
 
       - name: mongodb | install
-        apt: pkg=mongodb-10gen update_cache=yes force=yes
+        apt: pkg=mongodb-10gen state=latest update_cache=yes
         ignore_errors: true
-        notify: restart mongodb
         tags: mongodb
 
       - name: mongodb | create db directory
         file: dest=/data/db state=directory owner=mongodb group=mongodb
         tags: mongodb
 
-    handlers:
-      - name: restart mongodb
-        service: name=mongodb state=restarted
+      - name: mongodb | ensure service is running
+        service: name=duplicity state=started
+        tags: mongodb

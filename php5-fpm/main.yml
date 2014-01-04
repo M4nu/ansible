@@ -5,7 +5,7 @@
 
     tasks:
       - name: php5-fpm | install
-        apt: pkg=php5-fpm
+        apt: pkg=php5-fpm state=latest update_cache=yes
         tags: php5-fpm
 
       - name: php5-fpm | configure php.ini
@@ -35,6 +35,10 @@
         tags:
           - php5-fpm
           - vagrant
+
+      - name: php5-fpm | ensure service is running
+        service: name=php5-fpm state=started
+        tags: php5-fpm
 
     handlers:
       - name: reload php5-fpm

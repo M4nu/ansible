@@ -7,8 +7,7 @@
         tags: mysql
 
       - name: mysql | install
-        apt: pkg=mysql-server
-        notify: restart mysql
+        apt: pkg=mysql-server state=latest update_cache=yes
         tags: mysql
 
       - name: mysql | update root password for all root accounts from local servers
@@ -31,6 +30,6 @@
         mysql_db: name=test state=absent
         tags: mysql
 
-    handlers:
-      - name: restart mysql
-        service: name=mysql state=restarted
+      - name: mysql | ensure service is running
+        service: name=mysql state=started
+        tags: mysql

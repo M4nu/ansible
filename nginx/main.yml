@@ -22,13 +22,13 @@
 
       - name: nginx | copy config file
         template: src=files/nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf owner=root group=root mode=0644
-        notify: restart nginx
+        notify: reload nginx
         tags: nginx
 
       - name: nginx | update user
         lineinfile: dest=/etc/nginx/nginx.conf regexp="^user " line="user vagrant;" backup=yes
         when: vagrant is defined
-        notify: restart nginx
+        notify: reload nginx
         tags: nginx
 
       - name: nginx | configure
@@ -36,7 +36,7 @@
         with_items:
             - { regexp: "^worker_processes", line: "worker_processes auto;" }
             - { regexp: "server_tokens", line: "        server_tokens off;" }
-        notify: restart nginx
+        notify: reload nginx
         tags: nginx
 
       - name: nginx | disable default virtual host
@@ -46,6 +46,7 @@
 
       - name: nginx | copy symfony2 config file
         copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
+        notify: reload nginx
         tags: nginx
 
       - name: nginx | create /var/www directory
@@ -60,9 +61,10 @@
         lineinfile: "dest=/etc/sudoers state=present regexp='^www-data ALL=' line='www-data ALL= NOPASSWD: /etc/init.d/clear-opcode' validate='visudo -cf %s'"
         tags: nginx
 
-    handlers:
-      - name: restart nginx
-        action: service name=nginx state=restarted
+      - name: nginx | ensure service is running
+        service: name=nginx state=started
+        tags: nginx
 
+    handlers:
       - name: reload nginx
         service: name=nginx state=reloaded
