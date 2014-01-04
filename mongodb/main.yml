@@ -24,5 +24,5 @@
         tags: mongodb
 
       - name: mongodb | ensure service is running
-        service: name=duplicity state=started
+        service: name=mongodb state=started
         tags: mongodb
