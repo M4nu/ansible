@@ -11,8 +11,13 @@
 
       - name: elasticsearch | install
         command: dpkg -i /tmp/elasticsearch-{{ version }}.deb
+        notify: restart elasticsearch
         tags: elasticsearch
 
       - name: elasticsearch | ensure service is running
         service: name=elasticsearch state=started
         tags: elasticsearch
+
+    handlers:
+      - name: restart elasticsearch
+        service: name=elasticsearch state=restarted
