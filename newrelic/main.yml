@@ -1,6 +1,10 @@
 ---
   - hosts: web
 
+    vars:
+        appname: "{{ ansible_fqdn }}"
+        php_ini_files: []
+
     tasks:
       - name: newrelic | install prerequisites
         apt: pkg=python-apt
@@ -19,3 +23,8 @@
         tags:
           - newrelic
           - php5
+
+      - name: newrelic | configure php.ini
+        lineinfile: dest={{ item }} regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
+        with_items: php_ini_files
+        tags: newrelic
