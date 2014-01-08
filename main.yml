@@ -2,8 +2,13 @@
   - hosts: all
 
     pre_tasks:
+      - name: apt | check last update
+        stat: path=/var/cache/apt
+        register: apt_cache_stat
+
       - name: apt | update
-        apt: update_cache=yes cache_valid_time=86400
+        apt: update_cache=yes
+        when: ansible_date_time.epoch|float - apt_cache_stat.stat.mtime > 3600
 
       - name: apt | install prerequisites
         apt: pkg=python-pycurl
