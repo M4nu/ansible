@@ -4,3 +4,6 @@
     pre_tasks:
       - name: apt | update
         apt: update_cache=yes cache_valid_time=86400
+
+      - name: apt | install prerequisites
+        apt: pkg=python-pycurl

@@ -2,10 +2,6 @@
   - hosts: web
 
     tasks:
-      - name: varnish | install prerequisites
-        apt: pkg=python-apt
-        tags: varnish
-
       - name: varnish | install key
         apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
         tags: varnish

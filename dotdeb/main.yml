@@ -5,10 +5,6 @@
       php_version: 5.3
 
     tasks:
-      - name: dotdeb | install prerequisites
-        apt: pkg=python-apt
-        tags: dotdeb
-
       - name: dotdeb | add main repository
         apt_repository: repo='{{ item }}' update_cache=yes
         with_items:

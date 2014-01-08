@@ -2,10 +2,6 @@
   - hosts: db
 
     tasks:
-      - name: mongodb | install prerequisites
-        apt: pkg=python-apt
-        tags: mongodb
-
       - name: mongodb | add repository
         apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' update_cache=yes
         tags: mongodb

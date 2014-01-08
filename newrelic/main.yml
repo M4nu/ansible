@@ -6,10 +6,6 @@
         php_ini_files: []
 
     tasks:
-      - name: newrelic | install prerequisites
-        apt: pkg=python-apt
-        tags: newrelic
-
       - name: newrelic | add repository key
         apt_key: url=https://download.newrelic.com/548C16BF.gpg
         tags: newrelic
