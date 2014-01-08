@@ -1,0 +1,11 @@
+---
+- hosts: all
+
+  tasks:
+    - name: unattended-upgrades | install
+      apt: pkg=unattended-upgrades
+      tags: unattended-upgrades
+
+    - name: unattended-upgrades | copy config file
+      template: src=templates/10periodic.j2 dest=/etc/apt/apt.conf.d/10periodic owner=root group=root mode=0644
+      tags: unattended-upgrades
