@@ -3,7 +3,7 @@
 
     tasks:
       - name: fail2ban | install
-        apt: pkg=fail2ban state=latest update_cache=yes
+        apt: pkg=fail2ban state=latest
         tags: fail2ban
 
       - name: fail2ban | ensure service is running

@@ -3,7 +3,7 @@
 
     tasks:
       - name: common | install packages
-        apt: pkg={{ item }} update_cache=yes
+        apt: pkg={{ item }} state=latest
         with_items:
            - git
            - htop

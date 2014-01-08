@@ -3,5 +3,5 @@
 
     tasks:
       - name: redis | install
-        apt: pkg=redis-server state=latest update_cache=yes
+        apt: pkg=redis-server state=latest
         tags: redis

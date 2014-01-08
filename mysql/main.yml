@@ -7,7 +7,7 @@
         tags: mysql
 
       - name: mysql | install
-        apt: pkg=mysql-server state=latest update_cache=yes
+        apt: pkg=mysql-server state=latest
         tags: mysql
 
       - name: mysql | update root password for all root accounts from local servers

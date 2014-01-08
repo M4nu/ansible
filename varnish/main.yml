@@ -11,11 +11,11 @@
         tags: varnish
 
       - name: varnish | add repository
-        apt_repository: repo='deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0'
+        apt_repository: repo='deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0' update_cache=yes
         tags: varnish
 
       - name: varnish | install
-        apt: pkg=varnish update_cache=yes
+        apt: pkg=varnish
         notify: restart varnishe
         tags: varnish
 

@@ -6,20 +6,8 @@
       vhosts: []
 
     tasks:
-      - name: nginx | remove apache2
-        apt: pkg={{ item }} purge=yes state=absent
-        with_items:
-          - apache2-mpm-prefork
-          - apache2-utils
-          - apache2.2-bin
-          - apache2.2-common
-          - libapache2-mod-php5
-        tags:
-          - nginx
-          - apache2
-
       - name: nginx | install
-        apt: pkg=nginx state=latest update_cache=yes
+        apt: pkg=nginx state=latest
         tags: nginx
 
       - name: nginx | update user

@@ -3,7 +3,7 @@
 
     tasks:
       - name: php5 | install
-        apt: pkg=php5 state=latest update_cache=yes
+        apt: pkg=php5 state=latest
         tags: php5
 
       - name: php5 | configure opcache

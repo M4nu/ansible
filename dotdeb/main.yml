@@ -10,14 +10,14 @@
         tags: dotdeb
 
       - name: dotdeb | add main repository
-        apt_repository: repo='{{ item }}'
+        apt_repository: repo='{{ item }}' update_cache=yes
         with_items:
           - deb http://packages.dotdeb.org wheezy all
           - deb-src http://packages.dotdeb.org wheezy all
         tags: dotdeb
 
       - name: dotdeb | add php 5.4 repository
-        apt_repository: repo='{{ item }}'
+        apt_repository: repo='{{ item }}' update_cache=yes
         with_items:
           - deb http://packages.dotdeb.org squeeze-php54 all
           - deb-src http://packages.dotdeb.org squeeze-php54 all
@@ -25,7 +25,7 @@
         tags: dotdeb
 
       - name: dotdeb | add php 5.5 repository
-        apt_repository: repo='{{ item }}'
+        apt_repository: repo='{{ item }}' update_cache=yes
         with_items:
           - deb http://packages.dotdeb.org wheezy-php55 all
           - deb-src http://packages.dotdeb.org wheezy-php55 all

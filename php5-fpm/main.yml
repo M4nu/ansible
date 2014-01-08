@@ -6,7 +6,7 @@
 
     tasks:
       - name: php5-fpm | install
-        apt: pkg=php5-fpm state=latest update_cache=yes
+        apt: pkg=php5-fpm state=latest
         tags: php5-fpm
 
       - name: php5-fpm | install extensions
