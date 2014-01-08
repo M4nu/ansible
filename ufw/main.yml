@@ -1,6 +1,10 @@
 ---
   - hosts: web
 
+    vars:
+      rules:
+        - allow ssh/tcp
+
     tasks:
       - name: ufw | install
         apt: pkg=ufw state=latest
