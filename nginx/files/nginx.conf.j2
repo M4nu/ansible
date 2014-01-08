@@ -1,1 +1,6 @@
 client_max_body_size {{ upload_max_file_size }};
+
+{% if ssl %}
+ssl_certificate      /etc/nginx/conf/ssl-unified.crt;
+ssl_certificate_key  /etc/nginx/conf/ssl.key;
+{% endif %}
