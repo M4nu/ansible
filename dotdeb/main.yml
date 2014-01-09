@@ -6,7 +6,7 @@
 
   pre_tasks:
     - name: dotdeb | install requirements
-      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=python-pycurl state=latest update_cache=yes
       tags: dotdeb
 
   tasks:

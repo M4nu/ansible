@@ -7,7 +7,7 @@
 
   tasks:
     - name: ufw | install
-      apt: pkg=ufw state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=ufw state=latest update_cache=yes
       tags: ufw
 
     - name: ufw | reset

@@ -6,11 +6,11 @@
 
   tasks:
     - name: php5-fpm | install
-      apt: pkg=php5-fpm state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=php5-fpm state=latest update_cache=yes
       tags: php5-fpm
 
     - name: php5-fpm | install extensions
-      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg={{ item }} state=latest update_cache=yes
       with_items: extensions
       notify: restart php5-fpm
       tags: php5-fpm

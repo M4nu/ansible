@@ -1,7 +1,0 @@
----
-- hosts: all
-
-  pre_tasks:
-    - name: apt | update cache
-      apt: update_cache=yes
-      tags: apt

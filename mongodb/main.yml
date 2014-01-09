@@ -3,7 +3,7 @@
 
   pre_tasks:
     - name: mongodb | install requirements
-      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=python-pycurl state=latest update_cache=yes
       tags: mongodb
 
   tasks:
@@ -16,7 +16,7 @@
       tags: mongodb
 
     - name: mongodb | install
-      apt: pkg=mongodb-10gen state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=mongodb-10gen state=latest update_cache=yes
       ignore_errors: true
       tags: mongodb
 

@@ -3,7 +3,7 @@
 
   pre_tasks:
     - name: varnish | install requirements
-      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=python-pycurl state=latest update_cache=yes
       tags: varnish
 
   tasks:
@@ -16,7 +16,7 @@
       tags: varnish
 
     - name: varnish | install
-      apt: pkg=varnish state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=varnish state=latest update_cache=yes
       notify: restart varnish
       tags: varnish
 

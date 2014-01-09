@@ -3,5 +3,5 @@
 
   tasks:
     - name: java | install
-      apt: pkg=openjdk-7-jre state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=openjdk-7-jre state=latest update_cache=yes
       tags: java

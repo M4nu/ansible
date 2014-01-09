@@ -3,7 +3,7 @@
 
   tasks:
     - name: supervisor | install requirements
-      apt: pkg=python-setuptools state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg=python-setuptools state=latest update_cache=yes
       tags: supervisor
 
     - name: supervisor | install

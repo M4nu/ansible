@@ -3,7 +3,7 @@
 
   tasks:
     - name: php5 | install
-      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
+      apt: pkg={{ item }} state=latest update_cache=yes
       with_items:
         - php5-common
         - php5-cgi
