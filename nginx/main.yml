@@ -24,8 +24,14 @@
       notify: reload nginx
       tags: nginx
 
-    - name: nginx | copy config file
-      template: src=files/nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf owner=root group=root mode=0644
+    - name: nginx | copy variables config file
+      template: src=files/conf.d/variables.conf.j2 dest=/etc/nginx/conf.d/variables.conf owner=root group=root mode=0644
+      notify: reload nginx
+      tags: nginx
+
+    - name: nginx | copy ssl config file
+      template: src=files/conf.d/ssl.conf.j2 dest=/etc/nginx/conf.d/ssl.conf owner=root group=root mode=0644
+      when: ssl
       notify: reload nginx
       tags: nginx
 
