@@ -5,6 +5,11 @@
         appname: "{{ ansible_fqdn }}"
         php_ini_files: []
 
+    pre_tasks:
+      - name: newrelic | install requirements
+        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+        tags: newrelic
+
     tasks:
       - name: newrelic | add repository key
         apt_key: url=https://download.newrelic.com/548C16BF.gpg
@@ -15,7 +20,7 @@
         tags: newrelic
 
       - name: newrelic | install
-        apt: pkg=newrelic-php5 state=latest
+        apt: pkg=newrelic-php5 state=latest update_cache=yes cache_valid_time=3600
         tags:
           - newrelic
           - php5

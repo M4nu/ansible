@@ -15,7 +15,7 @@
         tags: nodejs
 
       - name: nodejs | install prerequisite
-        apt: pkg={{ item }}
+        apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
         with_items:
           - make
           - gcc

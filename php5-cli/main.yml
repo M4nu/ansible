@@ -3,7 +3,7 @@
 
     tasks:
       - name: php5-cli | install
-        apt: pkg=php5-cli
+        apt: pkg=php5-cli state=latest update_cache=yes cache_valid_time=3600
         tags: php5-cli
 
       - name: php5-cli | configure php.ini

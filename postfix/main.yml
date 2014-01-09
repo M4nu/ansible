@@ -3,7 +3,7 @@
 
     tasks:
       - name: postfix | install
-        apt: pkg=postfix state=latest
+        apt: pkg=postfix state=latest update_cache=yes cache_valid_time=3600
         tags: postfix
 
       - name: postfix | ensure service is running

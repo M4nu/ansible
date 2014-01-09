@@ -7,7 +7,7 @@
         tags: composer
 
       - name: symfony2 | install php5 extensions
-        apt: pkg={{ item }}
+        apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
         with_items:
           - php5-intl
           - php5-curl

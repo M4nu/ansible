@@ -4,6 +4,11 @@
     vars:
       php_version: 5.3
 
+    pre_tasks:
+      - name: dotdeb | install requirements
+        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+        tags: dotdeb
+
     tasks:
       - name: dotdeb | add main repository
         apt_repository: repo='{{ item }}' update_cache=yes

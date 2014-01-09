@@ -2,8 +2,8 @@
   - hosts: all
 
     tasks:
-      - name: supervisor | install prerequisites
-        apt: pkg=python-setuptools
+      - name: supervisor | install requirements
+        apt: pkg=python-setuptools state=latest update_cache=yes cache_valid_time=3600
         tags: supervisor
 
       - name: supervisor | install

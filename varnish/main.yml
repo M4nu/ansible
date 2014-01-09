@@ -1,6 +1,11 @@
 ---
   - hosts: web
 
+    pre_tasks:
+      - name: varnish | install requirements
+        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+        tags: varnish
+
     tasks:
       - name: varnish | install key
         apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
@@ -11,8 +16,8 @@
         tags: varnish
 
       - name: varnish | install
-        apt: pkg=varnish
-        notify: restart varnishe
+        apt: pkg=varnish state=latest update_cache=yes cache_valid_time=3600
+        notify: restart varnish
         tags: varnish
 
       - name: varnish | configure

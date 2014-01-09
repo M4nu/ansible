@@ -3,5 +3,5 @@
 
     tasks:
       - name: redis | install
-        apt: pkg=redis-server state=latest
+        apt: pkg=redis-server state=latest update_cache=yes cache_valid_time=3600
         tags: redis

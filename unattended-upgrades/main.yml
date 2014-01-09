@@ -3,7 +3,7 @@
 
   tasks:
     - name: unattended-upgrades | install
-      apt: pkg=unattended-upgrades
+      apt: pkg=unattended-upgrades state=latest update_cache=yes cache_valid_time=3600
       tags: unattended-upgrades
 
     - name: unattended-upgrades | copy config file

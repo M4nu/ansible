@@ -1,6 +1,11 @@
 ---
   - hosts: db
 
+    pre_tasks:
+      - name: mongodb | install requirements
+        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+        tags: mongodb
+
     tasks:
       - name: mongodb | add repository
         apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' update_cache=yes
@@ -11,7 +16,7 @@
         tags: mongodb
 
       - name: mongodb | install
-        apt: pkg=mongodb-10gen state=latest
+        apt: pkg=mongodb-10gen state=latest update_cache=yes cache_valid_time=3600
         ignore_errors: true
         tags: mongodb
 
