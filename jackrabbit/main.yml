@@ -1,0 +1,10 @@
+---
+- hosts: db
+
+  vars:
+    version: 2.6.5
+
+  tasks:
+    - name: jackrabbit | download and install
+      get_url: dest=/usr/bin url=http://apache.mirrors.multidist.eu/jackrabbit/{{ version }}/jackrabbit-standalone-{{ version }}.jar owner=root group=root mode=0755
+      tags: jackrabbit
