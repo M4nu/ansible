@@ -1,11 +1,11 @@
 ---
-  - hosts: all
+- hosts: all
 
-    tasks:
-      - name: supervisor | install requirements
-        apt: pkg=python-setuptools state=latest update_cache=yes cache_valid_time=3600
-        tags: supervisor
+  tasks:
+    - name: supervisor | install requirements
+      apt: pkg=python-setuptools state=latest update_cache=yes cache_valid_time=3600
+      tags: supervisor
 
-      - name: supervisor | install
-        easy_install: name=supervisor
-        tags: supervisor
+    - name: supervisor | install
+      easy_install: name=supervisor
+      tags: supervisor

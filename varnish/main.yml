@@ -1,33 +1,33 @@
 ---
-  - hosts: web
+- hosts: web
 
-    pre_tasks:
-      - name: varnish | install requirements
-        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
-        tags: varnish
+  pre_tasks:
+    - name: varnish | install requirements
+      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      tags: varnish
 
-    tasks:
-      - name: varnish | install key
-        apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
-        tags: varnish
+  tasks:
+    - name: varnish | install key
+      apt_key: url=http://repo.varnish-cache.org/debian/GPG-key.txt
+      tags: varnish
 
-      - name: varnish | add repository
-        apt_repository: repo='deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0' update_cache=yes
-        tags: varnish
+    - name: varnish | add repository
+      apt_repository: repo='deb http://repo.varnish-cache.org/debian/ wheezy varnish-3.0' update_cache=yes
+      tags: varnish
 
-      - name: varnish | install
-        apt: pkg=varnish state=latest update_cache=yes cache_valid_time=3600
-        notify: restart varnish
-        tags: varnish
+    - name: varnish | install
+      apt: pkg=varnish state=latest update_cache=yes cache_valid_time=3600
+      notify: restart varnish
+      tags: varnish
 
-      - name: varnish | configure
-        copy: src=files/default.vcl dest=/etc/varnish/default.vcl backup=yes
-        notify: reload varnish
-        tags: varnish
+    - name: varnish | configure
+      copy: src=files/default.vcl dest=/etc/varnish/default.vcl backup=yes
+      notify: reload varnish
+      tags: varnish
 
-    handlers:
-      - name: restart varnish
-        service: name=varnish state=restarted
+  handlers:
+    - name: restart varnish
+      service: name=varnish state=restarted
 
-      - name: reload varnish
-        service: name=varnish state=reloaded
+    - name: reload varnish
+      service: name=varnish state=reloaded

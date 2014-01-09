@@ -1,15 +1,15 @@
 ---
-  - hosts: web
+- hosts: web
 
-    tasks:
-      - name: php5-cli | install
-        apt: pkg=php5-cli state=latest update_cache=yes cache_valid_time=3600
-        tags: php5-cli
+  tasks:
+    - name: php5-cli | install
+      apt: pkg=php5-cli state=latest update_cache=yes cache_valid_time=3600
+      tags: php5-cli
 
-      - name: php5-cli | configure php.ini
-        lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-        with_items:
-          - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
-          - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
-          - { regexp: "expose_php =", line: "expose_php = Off" }
-        tags: php5-cli
+    - name: php5-cli | configure php.ini
+      lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
+        - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
+        - { regexp: "expose_php =", line: "expose_php = Off" }
+      tags: php5-cli

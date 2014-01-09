@@ -1,23 +1,23 @@
 ---
-  - hosts: db
+- hosts: db
 
-    vars:
-      version: 0.90.9
+  vars:
+    version: 0.90.9
 
-    tasks:
-      - name: elasticsearch | download
-        get_url: url=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ version }}.deb dest=/tmp/elasticsearch-{{ version }}.deb
-        tags: elasticsearch
+  tasks:
+    - name: elasticsearch | download
+      get_url: url=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ version }}.deb dest=/tmp/elasticsearch-{{ version }}.deb
+      tags: elasticsearch
 
-      - name: elasticsearch | install
-        command: dpkg -i /tmp/elasticsearch-{{ version }}.deb
-        notify: restart elasticsearch
-        tags: elasticsearch
+    - name: elasticsearch | install
+      command: dpkg -i /tmp/elasticsearch-{{ version }}.deb
+      notify: restart elasticsearch
+      tags: elasticsearch
 
-      - name: elasticsearch | ensure service is running
-        service: name=elasticsearch state=started
-        tags: elasticsearch
+    - name: elasticsearch | ensure service is running
+      service: name=elasticsearch state=started
+      tags: elasticsearch
 
-    handlers:
-      - name: restart elasticsearch
-        service: name=elasticsearch state=restarted
+  handlers:
+    - name: restart elasticsearch
+      service: name=elasticsearch state=restarted

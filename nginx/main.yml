@@ -1,78 +1,78 @@
 ---
-  - hosts: web
-    vars:
-      ssl: false
-      upload_max_file_size: 2M
-      vhosts: []
+- hosts: web
+  vars:
+    ssl: false
+    upload_max_file_size: 2M
+    vhosts: []
 
-    tasks:
-      - name: nginx | install
-        apt: pkg=nginx state=latest update_cache=yes cache_valid_time=3600
-        tags: nginx
+  tasks:
+    - name: nginx | install
+      apt: pkg=nginx state=latest update_cache=yes cache_valid_time=3600
+      tags: nginx
 
-      - name: nginx | update user
-        lineinfile: dest=/etc/nginx/nginx.conf regexp="^user " line="user vagrant;" backup=yes
-        when: vagrant is defined
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | update user
+      lineinfile: dest=/etc/nginx/nginx.conf regexp="^user " line="user vagrant;" backup=yes
+      when: vagrant is defined
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | configure
-        lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-        with_items:
-            - { regexp: "^worker_processes", line: "worker_processes auto;" }
-            - { regexp: "server_tokens", line: "        server_tokens off;" }
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | configure
+      lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+          - { regexp: "^worker_processes", line: "worker_processes auto;" }
+          - { regexp: "server_tokens", line: "        server_tokens off;" }
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | copy config file
-        template: src=files/nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf owner=root group=root mode=0644
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | copy config file
+      template: src=files/nginx.conf.j2 dest=/etc/nginx/conf.d/nginx.conf owner=root group=root mode=0644
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | copy config files
-        template: src={{ item }} dest=/etc/nginx/conf.d/ owner=root group=root mode=0644
-        with_fileglob:
-          - "{{ config_dir }}/*"
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | copy config files
+      template: src={{ item }} dest=/etc/nginx/conf.d/ owner=root group=root mode=0644
+      with_fileglob:
+        - "{{ config_dir }}/*"
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | disable default virtual host
-        file: dest=/etc/nginx/sites-enabled/default state=absent
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | disable default virtual host
+      file: dest=/etc/nginx/sites-enabled/default state=absent
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | copy virtual host
-        template: src={{ vhosts_dir }}/{{ item }} dest=/etc/nginx/sites-available/{{ item }} owner=root group=root mode=0644
-        with_items: vhosts
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | copy virtual host
+      template: src={{ vhosts_dir }}/{{ item }} dest=/etc/nginx/sites-available/{{ item }} owner=root group=root mode=0644
+      with_items: vhosts
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | enable virtual host
-        file: src=../sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} owner=root group=root state=link
-        with_items: vhosts
-        notify: reload nginx
-        tags: nginx
-      - name: nginx | copy symfony2 config file
-        copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
-        notify: reload nginx
-        tags: nginx
+    - name: nginx | enable virtual host
+      file: src=../sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} owner=root group=root state=link
+      with_items: vhosts
+      notify: reload nginx
+      tags: nginx
+    - name: nginx | copy symfony2 config file
+      copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
+      notify: reload nginx
+      tags: nginx
 
-      - name: nginx | create /var/www directory
-        file: dest=/var/www owner=www-data group=www-data state=directory
-        tags: nginx
+    - name: nginx | create /var/www directory
+      file: dest=/var/www owner=www-data group=www-data state=directory
+      tags: nginx
 
-      - name: nginx | use bash for www-data
-        command: chsh -s /bin/bash www-data
-        tags: nginx
+    - name: nginx | use bash for www-data
+      command: chsh -s /bin/bash www-data
+      tags: nginx
 
-      - name: nginx | allow www-data to clear opcode
-        lineinfile: "dest=/etc/sudoers state=present regexp='^www-data ALL=' line='www-data ALL= NOPASSWD: /etc/init.d/clear-opcode' validate='visudo -cf %s'"
-        tags: nginx
+    - name: nginx | allow www-data to clear opcode
+      lineinfile: "dest=/etc/sudoers state=present regexp='^www-data ALL=' line='www-data ALL= NOPASSWD: /etc/init.d/clear-opcode' validate='visudo -cf %s'"
+      tags: nginx
 
-      - name: nginx | ensure service is running
-        service: name=nginx state=started
-        tags: nginx
+    - name: nginx | ensure service is running
+      service: name=nginx state=started
+      tags: nginx
 
-    handlers:
-      - name: reload nginx
-        service: name=nginx state=reloaded
+  handlers:
+    - name: reload nginx
+      service: name=nginx state=reloaded

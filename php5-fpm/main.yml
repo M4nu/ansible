@@ -1,55 +1,55 @@
 ---
-  - hosts: web
-    vars:
-      extensions: []
-      upload_max_file_size: 2M
+- hosts: web
+  vars:
+    extensions: []
+    upload_max_file_size: 2M
 
-    tasks:
-      - name: php5-fpm | install
-        apt: pkg=php5-fpm state=latest update_cache=yes cache_valid_time=3600
-        tags: php5-fpm
+  tasks:
+    - name: php5-fpm | install
+      apt: pkg=php5-fpm state=latest update_cache=yes cache_valid_time=3600
+      tags: php5-fpm
 
-      - name: php5-fpm | install extensions
-        apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
-        with_items: extensions
-        notify: restart php5-fpm
-        tags: php5-fpm
+    - name: php5-fpm | install extensions
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
+      with_items: extensions
+      notify: restart php5-fpm
+      tags: php5-fpm
 
-      - name: php5-fpm | configure php.ini
-        lineinfile: dest=/etc/php5/fpm/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-        with_items:
-          - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
-          - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
-          - { regexp: "expose_php =", line: "expose_php = Off" }
-          - { regexp: "memory_limit =", line: "memory_limit = 64M" }
-          - { regexp: "display_errors =", line: "display_errors = Off" }
-          - { regexp: "upload_max_filesize =", line: "upload_max_filesize = {{ upload_max_file_size }}" }
-          - { regexp: "post_max_size =", line: "post_max_size = {{ upload_max_file_size }}" }
-        notify: reload php5-fpm
-        tags: php5-fpm
+    - name: php5-fpm | configure php.ini
+      lineinfile: dest=/etc/php5/fpm/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
+        - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
+        - { regexp: "expose_php =", line: "expose_php = Off" }
+        - { regexp: "memory_limit =", line: "memory_limit = 64M" }
+        - { regexp: "display_errors =", line: "display_errors = Off" }
+        - { regexp: "upload_max_filesize =", line: "upload_max_filesize = {{ upload_max_file_size }}" }
+        - { regexp: "post_max_size =", line: "post_max_size = {{ upload_max_file_size }}" }
+      notify: reload php5-fpm
+      tags: php5-fpm
 
-      - name: php5-fpm | copy clear-opcode script
-        copy: src=files/clear-opcode dest=/etc/init.d/clear-opcode owner=root group=root mode=0755
-        tags: php5-fpm
+    - name: php5-fpm | copy clear-opcode script
+      copy: src=files/clear-opcode dest=/etc/init.d/clear-opcode owner=root group=root mode=0755
+      tags: php5-fpm
 
-      - name: php5-fpm | update user and group
-        lineinfile: dest=/etc/php5/fpm/pool.d/www.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-        with_items:
-          - { regexp: "^user =", line: "user = vagrant" }
-          - { regexp: "^group =", line: "group = vagrant" }
-        when: vagrant is defined
-        notify: reload php5-fpm
-        tags:
-          - php5-fpm
-          - vagrant
+    - name: php5-fpm | update user and group
+      lineinfile: dest=/etc/php5/fpm/pool.d/www.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "^user =", line: "user = vagrant" }
+        - { regexp: "^group =", line: "group = vagrant" }
+      when: vagrant is defined
+      notify: reload php5-fpm
+      tags:
+        - php5-fpm
+        - vagrant
 
-      - name: php5-fpm | ensure service is running
-        service: name=php5-fpm state=started
-        tags: php5-fpm
+    - name: php5-fpm | ensure service is running
+      service: name=php5-fpm state=started
+      tags: php5-fpm
 
-    handlers:
-      - name: reload php5-fpm
-        service: name=php5-fpm state=reloaded
+  handlers:
+    - name: reload php5-fpm
+      service: name=php5-fpm state=reloaded
 
-      - name: restart php5-fpm
-        service: name=php5-fpm state=restarted
+    - name: restart php5-fpm
+      service: name=php5-fpm state=restarted

@@ -1,29 +1,29 @@
 ---
-  - hosts: db
+- hosts: db
 
-    pre_tasks:
-      - name: mongodb | install requirements
-        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
-        tags: mongodb
+  pre_tasks:
+    - name: mongodb | install requirements
+      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      tags: mongodb
 
-    tasks:
-      - name: mongodb | add repository
-        apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' update_cache=yes
-        tags: mongodb
+  tasks:
+    - name: mongodb | add repository
+      apt_repository: repo='deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' update_cache=yes
+      tags: mongodb
 
-      - name: mongodb | install key
-        apt_key: id=7F0CEB10 url=http://docs.mongodb.org/10gen-gpg-key.asc
-        tags: mongodb
+    - name: mongodb | install key
+      apt_key: id=7F0CEB10 url=http://docs.mongodb.org/10gen-gpg-key.asc
+      tags: mongodb
 
-      - name: mongodb | install
-        apt: pkg=mongodb-10gen state=latest update_cache=yes cache_valid_time=3600
-        ignore_errors: true
-        tags: mongodb
+    - name: mongodb | install
+      apt: pkg=mongodb-10gen state=latest update_cache=yes cache_valid_time=3600
+      ignore_errors: true
+      tags: mongodb
 
-      - name: mongodb | create db directory
-        file: dest=/data/db state=directory owner=mongodb group=mongodb
-        tags: mongodb
+    - name: mongodb | create db directory
+      file: dest=/data/db state=directory owner=mongodb group=mongodb
+      tags: mongodb
 
-      - name: mongodb | ensure service is running
-        service: name=mongodb state=started
-        tags: mongodb
+    - name: mongodb | ensure service is running
+      service: name=mongodb state=started
+      tags: mongodb

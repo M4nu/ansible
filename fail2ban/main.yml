@@ -1,11 +1,11 @@
 ---
-  - hosts: web
+- hosts: web
 
-    tasks:
-      - name: fail2ban | install
-        apt: pkg=fail2ban state=latest update_cache=yes cache_valid_time=3600
-        tags: fail2ban
+  tasks:
+    - name: fail2ban | install
+      apt: pkg=fail2ban state=latest update_cache=yes cache_valid_time=3600
+      tags: fail2ban
 
-      - name: fail2ban | ensure service is running
-        service: name=fail2ban state=started
-        tags: fail2ban
+    - name: fail2ban | ensure service is running
+      service: name=fail2ban state=started
+      tags: fail2ban

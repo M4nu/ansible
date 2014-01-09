@@ -1,38 +1,38 @@
 ---
-  - hosts: all
+- hosts: all
 
-    vars:
-      php_version: 5.3
+  vars:
+    php_version: 5.3
 
-    pre_tasks:
-      - name: dotdeb | install requirements
-        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
-        tags: dotdeb
+  pre_tasks:
+    - name: dotdeb | install requirements
+      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      tags: dotdeb
 
-    tasks:
-      - name: dotdeb | add main repository
-        apt_repository: repo='{{ item }}' update_cache=yes
-        with_items:
-          - deb http://packages.dotdeb.org wheezy all
-          - deb-src http://packages.dotdeb.org wheezy all
-        tags: dotdeb
+  tasks:
+    - name: dotdeb | add main repository
+      apt_repository: repo='{{ item }}' update_cache=yes
+      with_items:
+        - deb http://packages.dotdeb.org wheezy all
+        - deb-src http://packages.dotdeb.org wheezy all
+      tags: dotdeb
 
-      - name: dotdeb | add php 5.4 repository
-        apt_repository: repo='{{ item }}' update_cache=yes
-        with_items:
-          - deb http://packages.dotdeb.org squeeze-php54 all
-          - deb-src http://packages.dotdeb.org squeeze-php54 all
-        when: php_version == 5.4
-        tags: dotdeb
+    - name: dotdeb | add php 5.4 repository
+      apt_repository: repo='{{ item }}' update_cache=yes
+      with_items:
+        - deb http://packages.dotdeb.org squeeze-php54 all
+        - deb-src http://packages.dotdeb.org squeeze-php54 all
+      when: php_version == 5.4
+      tags: dotdeb
 
-      - name: dotdeb | add php 5.5 repository
-        apt_repository: repo='{{ item }}' update_cache=yes
-        with_items:
-          - deb http://packages.dotdeb.org wheezy-php55 all
-          - deb-src http://packages.dotdeb.org wheezy-php55 all
-        when: php_version == 5.5
-        tags: dotdeb
+    - name: dotdeb | add php 5.5 repository
+      apt_repository: repo='{{ item }}' update_cache=yes
+      with_items:
+        - deb http://packages.dotdeb.org wheezy-php55 all
+        - deb-src http://packages.dotdeb.org wheezy-php55 all
+      when: php_version == 5.5
+      tags: dotdeb
 
-      - name: dotdeb | install key
-        apt_key: url=http://www.dotdeb.org/dotdeb.gpg
-        tags: dotdeb
+    - name: dotdeb | install key
+      apt_key: url=http://www.dotdeb.org/dotdeb.gpg
+      tags: dotdeb

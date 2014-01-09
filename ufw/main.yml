@@ -1,28 +1,28 @@
 ---
-  - hosts: web
+- hosts: web
 
-    vars:
-      rules:
-        - allow ssh/tcp
+  vars:
+    rules:
+      - allow ssh/tcp
 
-    tasks:
-      - name: ufw | install
-        apt: pkg=ufw state=latest update_cache=yes cache_valid_time=3600
-        tags: ufw
+  tasks:
+    - name: ufw | install
+      apt: pkg=ufw state=latest update_cache=yes cache_valid_time=3600
+      tags: ufw
 
-      - name: ufw | reset
-        action: shell ufw --force reset
-        tags: ufw
+    - name: ufw | reset
+      action: shell ufw --force reset
+      tags: ufw
 
-      - name: ufw | configure
-        action: shell ufw {{ item }}
-        with_items: ${rules}
-        tags: ufw
+    - name: ufw | configure
+      action: shell ufw {{ item }}
+      with_items: ${rules}
+      tags: ufw
 
-      - name: ufw | enable
-        action: shell ufw --force enable
-        tags: ufw
+    - name: ufw | enable
+      action: shell ufw --force enable
+      tags: ufw
 
-      - name: ufw | ensure service is running
-        service: name=ufw state=started
-        tags: ufw
+    - name: ufw | ensure service is running
+      service: name=ufw state=started
+      tags: ufw

@@ -1,31 +1,31 @@
 ---
-  - hosts: web
+- hosts: web
 
-    vars:
-        appname: "{{ ansible_fqdn }}"
-        php_ini_files: []
+  vars:
+      appname: "{{ ansible_fqdn }}"
+      php_ini_files: []
 
-    pre_tasks:
-      - name: newrelic | install requirements
-        apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
-        tags: newrelic
+  pre_tasks:
+    - name: newrelic | install requirements
+      apt: pkg=python-pycurl state=latest update_cache=yes cache_valid_time=3600
+      tags: newrelic
 
-    tasks:
-      - name: newrelic | add repository key
-        apt_key: url=https://download.newrelic.com/548C16BF.gpg
-        tags: newrelic
+  tasks:
+    - name: newrelic | add repository key
+      apt_key: url=https://download.newrelic.com/548C16BF.gpg
+      tags: newrelic
 
-      - name: newrelic | add repository
-        apt_repository: repo='deb http://apt.newrelic.com/debian/ newrelic non-free' update_cache=yes
-        tags: newrelic
+    - name: newrelic | add repository
+      apt_repository: repo='deb http://apt.newrelic.com/debian/ newrelic non-free' update_cache=yes
+      tags: newrelic
 
-      - name: newrelic | install
-        apt: pkg=newrelic-php5 state=latest update_cache=yes cache_valid_time=3600
-        tags:
-          - newrelic
-          - php5
+    - name: newrelic | install
+      apt: pkg=newrelic-php5 state=latest update_cache=yes cache_valid_time=3600
+      tags:
+        - newrelic
+        - php5
 
-      - name: newrelic | configure php.ini
-        lineinfile: dest={{ item }} regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
-        with_items: php_ini_files
-        tags: newrelic
+    - name: newrelic | configure php.ini
+      lineinfile: dest={{ item }} regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
+      with_items: php_ini_files
+      tags: newrelic

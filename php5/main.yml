@@ -1,15 +1,15 @@
 ---
-  - hosts: web
+- hosts: web
 
-    tasks:
-      - name: php5 | install
-        apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
-        with_items:
-          - php5-common
-          - php5-cgi
-          - php5
-        tags: php5
+  tasks:
+    - name: php5 | install
+      apt: pkg={{ item }} state=latest update_cache=yes cache_valid_time=3600
+      with_items:
+        - php5-common
+        - php5-cgi
+        - php5
+      tags: php5
 
-      - name: php5 | configure opcache
-        copy: src=files/opcache.ini dest=/etc/php5/mods-available/opcache.ini backup=yes
-        tags: php5
+    - name: php5 | configure opcache
+      copy: src=files/opcache.ini dest=/etc/php5/mods-available/opcache.ini backup=yes
+      tags: php5
