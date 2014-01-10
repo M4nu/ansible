@@ -6,6 +6,7 @@
     node_prefix: "node-v{{ node_version }}"
     node_tarball: "{{ node_prefix }}.tar.gz"
     node_path: "/usr/local"
+    packages: []
 
   tasks:
     - name: nodejs | check installation
@@ -50,4 +51,9 @@
 
     - name: nodejs | add NODE_PATH environment variable
       lineinfile: dest=/etc/environment regexp='^export NODE_PATH=' line='export NODE_PATH=/usr/local/lib/node_modules'
+      tags: nodejs
+
+    - name: nodejs | install packages
+      npm: name={{ item }} global=yes
+      with_items: packages
       tags: nodejs
