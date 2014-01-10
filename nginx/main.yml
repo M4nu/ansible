@@ -48,16 +48,17 @@
       tags: nginx
 
     - name: nginx | copy virtual host
-      template: src={{ vhosts_dir }}/{{ item }} dest=/etc/nginx/sites-available/{{ item }} owner=root group=root mode=0644
+      template: src={{ vhosts_dir }}/{{ item.src }} dest=/etc/nginx/sites-available/{{ item.dest }} owner=root group=root mode=0644
       with_items: vhosts
       notify: reload nginx
       tags: nginx
 
     - name: nginx | enable virtual host
-      file: src=../sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} owner=root group=root state=link
+      file: src=../sites-available/{{ item.dest }} dest=/etc/nginx/sites-enabled/{{ item.dest }} owner=root group=root state=link
       with_items: vhosts
       notify: reload nginx
       tags: nginx
+
     - name: nginx | copy symfony2 config file
       copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
       notify: reload nginx
