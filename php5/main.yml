@@ -1,6 +1,9 @@
 ---
 - hosts: web
 
+  vars:
+    extensions: []
+
   tasks:
     - name: php5 | install
       apt: pkg={{ item }} state=latest update_cache=yes
@@ -8,6 +11,11 @@
         - php5-common
         - php5-cgi
         - php5
+      tags: php5
+
+    - name: php5 | install extensions
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items: extensions
       tags: php5
 
     - name: php5 | configure opcache

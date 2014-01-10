@@ -1,18 +1,11 @@
 ---
 - hosts: web
   vars:
-    extensions: []
     upload_max_file_size: 2M
 
   tasks:
     - name: php5-fpm | install
       apt: pkg=php5-fpm state=latest update_cache=yes
-      tags: php5-fpm
-
-    - name: php5-fpm | install extensions
-      apt: pkg={{ item }} state=latest update_cache=yes
-      with_items: extensions
-      notify: restart php5-fpm
       tags: php5-fpm
 
     - name: php5-fpm | configure php.ini
@@ -50,6 +43,3 @@
   handlers:
     - name: reload php5-fpm
       service: name=php5-fpm state=reloaded
-
-    - name: restart php5-fpm
-      service: name=php5-fpm state=restarted
