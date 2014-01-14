@@ -4,6 +4,8 @@
     vars:
         appname: "{{ ansible_fqdn }}"
         php_ini_files: []
+        plugins: []
+        tmp_plugin_agent_file: /tmp/newrelic_plugin_agent.cfg
 
     tasks:
       - name: newrelic | install prerequisites
@@ -27,4 +29,29 @@
       - name: newrelic | configure php.ini
         lineinfile: dest={{ item }} regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
         with_items: php_ini_files
+        tags: newrelic
+
+      - name: newrelic | install dependencies
+        apt: pkg=python-pip
+        when: plugins > 0
+        tags: newrelic
+
+      - name: newrelic | install plugin agent
+        pip: name=newrelic-plugin-agent
+        when: plugins > 0
+        tags: newrelic
+
+      - name: newrelic | copy config file
+        fetch: src=/opt/newrelic_plugin_agent/newrelic_plugin_agent.cfg dest={{ tmp_plugin_agent_file }}
+        when: plugins > 0
+        tags: newrelic
+
+      - copy: src={{ tmp_plugin_agent_file }} dest=/etc/newrelic/newrelic_plugin_agent.cfg
+        when: plugins > 0
+        tags: newrelic
+
+      - name: newrelic | install plugins
+        pip: name=newrelic-plugin-agent[{{ item }}]
+        with_items: plugins
+        when: plugins > 0
         tags: newrelic
