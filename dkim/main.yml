@@ -1,0 +1,34 @@
+---
+- hosts: web
+
+  vars:
+      user: root
+      directory: /etc/dkim
+      private_key: private.pem
+      public_key: public.pem
+      private_key_path: "{{ directory }}/{{ private_key }}"
+      public_key_path: "{{ directory }}/{{ public_key }}"
+
+  tasks:
+    - name: dkim | install dependencies
+      apt: pkg=openssl state=latest
+
+    - name: dkim | create directory
+      file: path={{ directory }} state=directory recurse=yes owner={{ user }} group={{ user }} mode=0755
+      tags: dkim
+
+    - name: dkim | create private key
+      command: openssl genrsa -out {{ private_key_path }} 1024 -outform PEM creates={{ private_key_path }}
+      tags: dkim
+
+    - name: dkim | check private key
+      file: path={{ private_key_path }} owner={{ user }} group={{ user }} mode=0600
+      tags: dkim
+
+    - name: dkim | create public key
+      command: openssl rsa -in {{ private_key_path }} -pubout -out {{ public_key_path }} -outform PEM creates={{ public_key_path }}
+      tags: dkim
+
+    - name: dkim | check public key
+      file: path={{ public_key_path }} owner={{ user }} group={{ user }} mode=0600
+      tags: dkim
