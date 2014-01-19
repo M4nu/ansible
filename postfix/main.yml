@@ -1,11 +1,33 @@
 ---
 - hosts: all
 
+  vars:
+    myhostname: "{{ ansible_fqdn }}"
+    myorigin: \\$mydomain
+    relayhost: ""
+    inet_interfaces: loopback-only
+
   tasks:
     - name: postfix | install
       apt: pkg=postfix state=latest update_cache=yes
       tags: postfix
 
+    - name: postfix | configure
+      lineinfile: dest=/etc/postfix/main.cf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+          - { regexp: "^myhostname", line: "myhostname = {{ myhostname }}" }
+          - { regexp: "^myorigin", line: "myorigin = {{ myorigin }}" }
+          - { regexp: "^mydestination", line: "mydestination = " }
+          - { regexp: "^relayhost", line: "relayhost = {{ relayhost }}" }
+          - { regexp: "^inet_interfaces", line: "inet_interfaces = {{ inet_interfaces }}" }
+      notify: reload postfix
+      tags: postfix
+
     - name: postfix | ensure service is running
       service: name=postfix state=started
       tags: postfix
+
+  handlers:
+    - name: reload postfix
+      service: name=postfix state=reloaded
+
