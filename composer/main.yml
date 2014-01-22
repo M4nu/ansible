@@ -1,0 +1,14 @@
+---
+- hosts: web
+
+  vars:
+    path: /usr/bin/composer
+
+  tasks:
+    - name: composer | install
+      get_url: url=http://getcomposer.org/composer.phar dest={{ path }} owner=root group=root mode=0755
+      tags: composer
+
+    - name: composer | install update cron
+      cron: name="update composer" user="root" special_time="weekly" job="{{ path }} self-update > /dev/null"
+      tags: composer
