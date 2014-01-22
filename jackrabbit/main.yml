@@ -3,8 +3,42 @@
 
   vars:
     version: 2.6.5
+    base_dir: /usr/bin/jackrabbit
+    jar: "jackrabbit-standalone-{{ version }}.jar"
+    host: 127.0.0.1
+    port: 8080
+    startup_script_path: /etc/init.d/jackrabbit
 
   tasks:
     - name: jackrabbit | download and install
-      get_url: dest=/usr/bin url=http://apache.mirrors.multidist.eu/jackrabbit/{{ version }}/jackrabbit-standalone-{{ version }}.jar owner=root group=root mode=0755
+      file: path={{ base_dir }} state=directory owner=root group=root mode=0755
+      tags: jackrabbit
+
+    - get_url: url=http://apache.mirrors.multidist.eu/jackrabbit/{{ version }}/{{ jar }} dest={{ base_dir }}/{{ jar }} owner=root group=root mode=0755
+      tags: jackrabbit
+
+    - name: jackrabbit | install startup script
+      get_url: url=https://raw2.github.com/sixty-nine/Jackrabbit-startup-script/master/jackrabbit.sh dest={{ startup_script_path }} owner=root group=root mode=0755
+      tags: jackrabbit
+
+    - name: jackrabbit | install startup script dependencies
+      apt: pkg=curl state=latest
+      tags: jackrabbit
+
+    - name: jackrabbit | configure startup script
+      lineinfile: dest={{ startup_script_path }} regexp="{{ item.regexp }}" line="{{ item.line }}"
+      with_items:
+        - { regexp: "^BASEDIR=", line: "BASEDIR={{ base_dir }}" }
+        - { regexp: "^JACKRABBIT_JAR=", line: "JACKRABBIT_JAR=$BASEDIR/{{ jar }}" }
+        - { regexp: "^JACKRABBIT_HOST=", line: "JACKRABBIT_HOST={{ host }}" }
+        - { regexp: "^JACKRABBIT_PORT=", line: "JACKRABBIT_PORT={{ port }}" }
+      tags: jackrabbit
+
+    - name: jackrabbit | remove startup script jmx config
+      lineinfile: dest={{ startup_script_path }} insertafter="^LOGFILE=" line="MANAGEMENT="
+      tags: jackrabbit
+
+  post_tasks:
+    - name: jackrabbit | ensure service is running
+      service: name=jackrabbit state=started enabled=yes
       tags: jackrabbit
