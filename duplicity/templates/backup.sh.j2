@@ -1,0 +1,73 @@
+#!/bin/bash
+
+targets=({% for target in targets %}'{{ target }}' {% endfor %})
+
+begin () {
+    text=$1
+    printf "\n--- $text ---\n"
+}
+
+backup () {
+    src=$1
+    dest=$2
+
+    for target in "${targets[@]}"
+    do
+        url=$target/{{ ansible_fqdn }}/$dest
+        duplicity --full-if-older-than 1W $src $url
+        duplicity remove-older-than 1M --force $url
+    done
+}
+
+mkdir -p {{ tmp_dir }}
+chmod 700 {{ tmp_dir }}
+
+{% if directories %}
+# Directories
+{% for directory in directories %}
+backup '{{ directory }}' '{{ directory }}'
+{% endfor %}
+{% endif %}
+
+{%- if mysql %}
+{% set dest = '/mysql' %}
+{% set src = tmp_dir ~ dest -%}
+
+begin MySQL
+mkdir -p {{ src }}
+databases=`mysql --user=root -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema)"`
+
+for db in $databases; do
+    mysqldump -u root -h 127.0.0.1 --single-transaction --routines --triggers --add-drop-table --extended-insert --databases $db > "{{ src }}/$db.sql"
+done
+
+backup {{ src }} {{ dest }}
+{% endif %}
+
+{% if mongodb %}
+{% set dest = '/mongodb' %}
+{% set src = tmp_dir ~ dest -%}
+
+begin MongoDB
+mkdir -p {{ src }}
+mongodump --out {{ src }}
+
+backup {{ src }} {{ dest }}
+{% endif %}
+
+{% if jackrabbit %}
+{% set dest = '/jackrabbit' %}
+{% set src = tmp_dir ~ dest -%}
+
+begin Jackrabbit
+service jackrabbit stop
+sleep 1
+java -jar jackrabbit-standalone-2.6.5.jar --backup --backup-repo {{ src }}
+service jackrabbit start
+
+backup {{ src }} {{ dest }}
+{% endif %}
+
+rm -rf {{ tmp_dir }}
+
+exit 0

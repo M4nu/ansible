@@ -1,0 +1,27 @@
+---
+- hosts: all
+
+  vars:
+    directories: []
+    mysql: false
+    mongodb: false
+    jackrabbit: false
+    targets: []
+    tmp_dir: /tmp/duplicity
+    executable: /usr/bin/backup
+
+  tasks:
+    - name: duplicity | install
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - duplicity
+        - python-gobject-2
+      tags: duplicity
+
+    - name: duplicity | copy backup script
+      template: src=templates/backup.sh.j2 dest={{ executable }} owner=root group=root mode=0700
+      tags: duplicity
+
+    - name: duplicity | install cron
+      cron: name="duplicity" user="root" hour="4" job="nice -n 19 ionice -c2 -n7 {{ executable }} >> /var/log/duplicity.log"
+      tags: duplicity
