@@ -1,0 +1,27 @@
+---
+- hosts: all
+
+  vars:
+    version: 1.3.9
+    directory: "lynis-{{ version }}"
+    archive: "{{ directory }}.tar.gz"
+    dest: /etc/lynis
+    cron: false
+
+  tasks:
+    - name: lynis | download
+      get_url: url=http://cisofy.com/files/{{ archive }} dest=/tmp
+      tags: lynis
+
+    - name: lynis | extract
+      command: tar zxf {{ archive }} chdir=/tmp creates={{ directory }}
+      tags: lynis
+
+    - name: lynis | install
+      command: mv {{ directory }} {{ dest }} chdir=/tmp creates={{ dest }}
+      tags: lynis
+
+    - name: lynis | install cron job
+      cron: name="lynis" user="root" special_time="daily" job="cd {{ dest }} && ./lynis -c --auditor "automated" --cronjob --quiet"
+      when: cron
+      tags: lynis
