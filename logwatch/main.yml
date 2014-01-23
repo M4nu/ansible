@@ -1,0 +1,11 @@
+---
+- hosts: all
+
+  tasks:
+    - name: logwatch | install
+      apt: pkg=logwatch state=latest update_cache=yes
+      tags: logwatch
+
+    - name: logwatch | configure
+      lineinfile: dest=/usr/share/logwatch/default.conf/logwatch.conf regexp="Format = " line="Format = html" backup=yes
+      tags: logwatch
