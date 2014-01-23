@@ -1,6 +1,9 @@
 ---
 - hosts: all
 
+  vars:
+    aliases: []
+
   tasks:
     - name: common | install packages
       apt: pkg={{ item }} state=latest update_cache=yes
@@ -22,3 +25,14 @@
     - name: common | copy bash config files
       copy: src=files/aliases.sh dest=/etc/profile.d/aliases.sh
       tags: common
+
+    - name: common | setup root email alias
+      lineinfile: "dest=/etc/aliases regexp='^{{ item.user }}:' line='{{ item.user }}: {{ item.alias }}' backup=yes"
+      with_items: aliases
+      when: aliases > 0
+      notify: newaliases
+      tags: common
+
+  handlers:
+    - name: newaliases
+      command: newaliases
