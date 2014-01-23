@@ -20,6 +20,7 @@
           - { regexp: "^mydestination", line: "mydestination = " }
           - { regexp: "^relayhost", line: "relayhost = {{ relayhost }}" }
           - { regexp: "^inet_interfaces", line: "inet_interfaces = {{ inet_interfaces }}" }
+          - { regexp: "^virtual_maps =", line: "virtual_maps = hash:/etc/aliases" }
       notify: reload postfix
       tags: postfix
 
