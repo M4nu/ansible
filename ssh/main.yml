@@ -1,0 +1,21 @@
+---
+- hosts: all
+
+  vars:
+    users:
+      - root
+
+  tasks:
+    - name: ssh | authorize local public key
+      authorized_key: user={{ item }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      with_items: users
+      tags: ssh
+
+    - name: ssh | disallow root login
+      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin without-password"
+      notify: reload ssh
+      tags: ssh
+
+  handlers:
+   - name: reload ssh
+     action: service ssh state=reloaded
