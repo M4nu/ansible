@@ -12,6 +12,7 @@
          - python-pycurl
          - bash-completion
          - sudo
+         - ntp
       tags: common
 
     - name: common | configure prompt
