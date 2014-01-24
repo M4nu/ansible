@@ -60,10 +60,10 @@ backup {{ src }} {{ dest }}
 {% set src = tmp_dir ~ dest -%}
 
 begin Jackrabbit
-service jackrabbit stop
+/etc/init.d/jackrabbit stop
 sleep 1
-java -jar jackrabbit-standalone-2.6.5.jar --backup --backup-repo {{ src }}
-service jackrabbit start
+cd /usr/bin/jackrabbit && java -jar jackrabbit.jar --backup --backup-repo {{ src }}
+/etc/init.d/jackrabbit start
 
 backup {{ src }} {{ dest }}
 {% endif %}

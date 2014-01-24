@@ -5,6 +5,7 @@
     version: 2.6.5
     base_dir: /usr/bin/jackrabbit
     jar: "jackrabbit-standalone-{{ version }}.jar"
+    path: "{{ base_dir }}/{{ jar }}"
     host: 127.0.0.1
     port: 8080
     startup_script_path: /etc/init.d/jackrabbit
@@ -14,7 +15,11 @@
       file: path={{ base_dir }} state=directory owner=root group=root mode=0755
       tags: jackrabbit
 
-    - get_url: url=http://apache.mirrors.multidist.eu/jackrabbit/{{ version }}/{{ jar }} dest={{ base_dir }}/{{ jar }} owner=root group=root mode=0755
+    - get_url: url=http://apache.mirrors.multidist.eu/jackrabbit/{{ path }} dest={{ path }} owner=root group=root mode=0755
+      tags: jackrabbit
+
+    - name: jackrabbit | create symlink
+      file: src={{ path }} dest={{ base_dir }}/jackrabbit.jar owner=root group=root state=link
       tags: jackrabbit
 
     - name: jackrabbit | install startup script
