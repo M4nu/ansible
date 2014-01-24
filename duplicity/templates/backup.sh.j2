@@ -35,10 +35,10 @@ backup '{{ directory }}' '{{ directory }}'
 
 begin MySQL
 mkdir -p {{ src }}
-databases=`mysql --user=root -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema)"`
+databases=`mysql --user=root -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
 
 for db in $databases; do
-    mysqldump -u root -h 127.0.0.1 --single-transaction --routines --triggers --add-drop-table --extended-insert --databases $db > "{{ src }}/$db.sql"
+    mysqldump -u root -h 127.0.0.1 --single-transaction --routines --triggers --events --ignore-table=mysql.event --add-drop-table --extended-insert --databases $db > "{{ src }}/$db.sql"
 done
 
 backup {{ src }} {{ dest }}
