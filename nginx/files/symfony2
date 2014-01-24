@@ -1,3 +1,13 @@
+if (-f $document_root/maintenance.html) {
+    return 503;
+}
+
+error_page 503 @maintenance;
+location @maintenance {
+    rewrite ^(.*)$ /maintenance.html last;
+    break;
+}
+
 location / {
     try_files $uri @rewriteapp;
 }
