@@ -18,4 +18,4 @@
 
   handlers:
    - name: reload ssh
-     action: service ssh state=reloaded
+     service: name=ssh state=reloaded
