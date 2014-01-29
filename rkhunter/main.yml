@@ -1,6 +1,9 @@
 ---
 - hosts: all
 
+  vars:
+      allow_ssh_root_user: without-password
+
   tasks:
     - name: rkhunter | install
       apt: pkg=rkhunter state=latest update_cache=yes
@@ -13,8 +16,9 @@
     - name: rkhunter | configure
       lineinfile: dest=/etc/rkhunter.conf regexp="{{ item }}" line="{{ item }}" backup=yes
       with_items:
-        - ALLOWHIDDENDIR=\"/etc/.java\"
-        - SCRIPTWHITELIST=\"/usr/bin/unhide.rb\"
+        - ^ALLOW_SSH_ROOT_USER={{ allow_ssh_root_user }}
+        - ^ALLOWHIDDENDIR=\"/etc/.java\"
+        - ^SCRIPTWHITELIST=\"/usr/bin/unhide.rb\"
       tags: rkhunter
 
     - name: rkhunter | configure cron
