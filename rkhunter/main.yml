@@ -14,11 +14,11 @@
       tags: rkhunter
 
     - name: rkhunter | configure
-      lineinfile: dest=/etc/rkhunter.conf regexp="{{ item }}" line="{{ item }}" backup=yes
+      lineinfile: dest=/etc/rkhunter.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
       with_items:
-        - ^ALLOW_SSH_ROOT_USER={{ allow_ssh_root_user }}
-        - ^ALLOWHIDDENDIR=\"/etc/.java\"
-        - ^SCRIPTWHITELIST=\"/usr/bin/unhide.rb\"
+        - { regexp: ALLOW_SSH_ROOT_USER=, line: "ALLOW_SSH_ROOT_USER={{ allow_ssh_root_user }}" }
+        - { regexp: ALLOWHIDDENDIR=\"/etc/.java\", line: ALLOWHIDDENDIR=\"/etc/.java\" }
+        - { regexp: SCRIPTWHITELIST=/usr/bin/unhide.rb, line: SCRIPTWHITELIST=/usr/bin/unhide.rb }
       tags: rkhunter
 
     - name: rkhunter | configure cron
