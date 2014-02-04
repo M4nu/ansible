@@ -15,7 +15,7 @@
       file: path={{ base_dir }} state=directory owner=root group=root mode=0755
       tags: jackrabbit
 
-    - get_url: url=http://apache.mirrors.multidist.eu/jackrabbit/{{ path }} dest={{ path }} owner=root group=root mode=0755
+    - get_url: url=http://www.eu.apache.org/dist/jackrabbit/{{ version }}/{{ jar }} dest={{ path }} owner=root group=root mode=0755
       tags: jackrabbit
 
     - name: jackrabbit | create symlink
