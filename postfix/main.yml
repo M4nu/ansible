@@ -6,6 +6,7 @@
     myorigin: \\$mydomain
     relayhost: ""
     inet_interfaces: loopback-only
+    aliases: []
 
   tasks:
     - name: postfix | install
@@ -24,11 +25,20 @@
       notify: reload postfix
       tags: postfix
 
+    - name: postfix | setup aliases
+      lineinfile: "dest=/etc/aliases regexp='^{{ item.user }}:' line='{{ item.user }}: {{ item.alias }}' backup=yes"
+      with_items: aliases
+      when: aliases > 0
+      notify: newaliases
+      tags: postfix
+
     - name: postfix | ensure service is running
       service: name=postfix state=started
       tags: postfix
 
   handlers:
+    - name: newaliases
+      command: newaliases
+
     - name: reload postfix
       service: name=postfix state=reloaded
-
