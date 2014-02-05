@@ -1,3 +1,4 @@
+{% set tmp_dir = tmp_dir ~ '/duplicity' %}
 #!/bin/bash
 
 targets=({% for target in targets %}'{{ target }}' {% endfor %})
@@ -14,7 +15,7 @@ backup () {
     for target in "${targets[@]}"
     do
         url=$target/{{ ansible_fqdn }}/$dest
-        duplicity --full-if-older-than 1W $src $url
+        duplicity --full-if-older-than 1W --tempdir {{ tmp_dir }} $src $url
         duplicity remove-older-than 1M --force $url
     done
 }
