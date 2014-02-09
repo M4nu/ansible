@@ -8,4 +8,4 @@
 # Description:       Clear php opcode by restarting php5-fpm
 ### END INIT INFO
 
-service php5-fpm reload
+service php5-fpm restart
