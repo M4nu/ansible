@@ -3,6 +3,7 @@
   vars:
     ssl: false
     upload_max_file_size: 2M
+    user: www-data
     vhosts: []
 
   tasks:
@@ -10,22 +11,8 @@
       apt: pkg=nginx state=latest update_cache=yes
       tags: nginx
 
-    - name: nginx | update user
-      lineinfile: dest=/etc/nginx/nginx.conf regexp="^user " line="user vagrant;" backup=yes
-      when: vagrant is defined
-      notify: reload nginx
-      tags: nginx
-
-    - name: nginx | configure
-      lineinfile: dest=/etc/nginx/nginx.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-      with_items:
-          - { regexp: "^worker_processes", line: "worker_processes auto;" }
-          - { regexp: "server_tokens", line: "        server_tokens off;" }
-      notify: reload nginx
-      tags: nginx
-
-    - name: nginx | copy variables config file
-      template: src=files/conf.d/variables.conf.j2 dest=/etc/nginx/conf.d/variables.conf owner=root group=root mode=0644
+    - name: nginx | copy config file
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root group=root mode=0644
       notify: reload nginx
       tags: nginx
 
