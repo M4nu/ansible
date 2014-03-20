@@ -10,6 +10,8 @@
     tmp_dir: /tmp
     executable: /usr/bin/backup
     ncftp: false
+    full_time: 1W
+    remove_time: 1M
 
   tasks:
     - name: duplicity | install
