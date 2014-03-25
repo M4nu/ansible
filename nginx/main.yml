@@ -32,19 +32,25 @@
     - name: nginx | disable default virtual host
       file: dest=/etc/nginx/sites-enabled/default state=absent
       notify: reload nginx
-      tags: nginx
+      tags:
+        - nginx
+        - vhost
 
     - name: nginx | copy virtual host
       template: src={{ vhosts_dir }}/{{ item.src }} dest=/etc/nginx/sites-available/{{ item.dest }} owner=root group=root mode=0644
       with_items: vhosts
       notify: reload nginx
-      tags: nginx
+      tags:
+        - nginx
+        - vhost
 
     - name: nginx | enable virtual host
       file: src=../sites-available/{{ item.dest }} dest=/etc/nginx/sites-enabled/{{ item.dest }} owner=root group=root state=link
       with_items: vhosts
       notify: reload nginx
-      tags: nginx
+      tags:
+        - nginx
+        - vhost
 
     - name: nginx | copy symfony2 config file
       copy: src=files/symfony2 dest=/etc/nginx/symfony2 owner=root group=root mode=0644
