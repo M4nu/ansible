@@ -56,19 +56,6 @@ mongodump --out {{ src }}
 backup {{ src }} {{ dest }}
 {% endif %}
 
-{% if jackrabbit %}
-{% set dest = '/jackrabbit' %}
-{% set src = tmp_dir ~ dest -%}
-
-begin Jackrabbit
-/etc/init.d/jackrabbit stop
-sleep 1
-cd /usr/bin/jackrabbit && java -jar jackrabbit.jar --backup --backup-repo {{ src }}
-/etc/init.d/jackrabbit start
-
-backup {{ src }} {{ dest }}
-{% endif %}
-
 rm -rf {{ tmp_dir }}
 
 exit 0
