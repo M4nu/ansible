@@ -15,7 +15,7 @@ backup () {
     for target in "${targets[@]}"
     do
         url=$target/{{ ansible_fqdn }}/$dest
-        duplicity --full-if-older-than {{ remove_time }} --tempdir {{ tmp_dir }} $src $url
+        duplicity --full-if-older-than {{ remove_time }} --tempdir {{ tmp_dir }} --exclude '**cache/**' --exclude '**log/**' --exclude '**logs/**' --exclude '**tmp/**' --exclude '**.lock**' $src $url
         duplicity remove-older-than {{ full_time }} --force $url
     done
 }
