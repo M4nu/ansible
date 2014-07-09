@@ -3,7 +3,6 @@
 
   vars:
       appname: "{{ ansible_fqdn }}"
-      php_ini_files: []
 
   pre_tasks:
     - name: newrelic | install requirements
@@ -26,6 +25,5 @@
         - php5
 
     - name: newrelic | configure php.ini
-      lineinfile: dest={{ item }} regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
-      with_items: php_ini_files
+      lineinfile: dest=/etc/php5/mods-available/newrelic.ini regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
       tags: newrelic
