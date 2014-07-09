@@ -1,9 +1,6 @@
 ---
 - hosts: web
 
-  vars:
-    memory_limit: 128M
-
   tasks:
     - name: php5-cli | install
       apt: pkg=php5-cli state=latest update_cache=yes
@@ -15,5 +12,4 @@
         - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
         - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
         - { regexp: "expose_php =", line: "expose_php = Off" }
-        - { regexp: "memory_limit =", line: "memory_limit = {{ memory_limit }}" }
       tags: php5-cli
