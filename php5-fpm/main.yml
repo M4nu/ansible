@@ -2,6 +2,7 @@
 - hosts: web
   vars:
     upload_max_file_size: 2M
+    max_input_vars: 1000
     memory_limit: 64M
     listen_user: www-data
     listen_group: www-data
@@ -21,6 +22,7 @@
         - { regexp: "display_errors =", line: "display_errors = Off" }
         - { regexp: "upload_max_filesize =", line: "upload_max_filesize = {{ upload_max_file_size }}" }
         - { regexp: "post_max_size =", line: "post_max_size = {{ upload_max_file_size }}" }
+        - { regexp: "max_input_vars =", line: "max_input_vars = {{ max_input_vars }}" }
       notify: reload php5-fpm
       tags: php5-fpm
 
