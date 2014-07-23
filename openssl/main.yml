@@ -1,0 +1,38 @@
+---
+- hosts: web
+
+  vars:
+      name: default
+      user: root
+      group: "{{ user }}"
+      directory: "/etc/openssl/{{ name }}"
+      key_size: 512
+      private_key: private.pem
+      public_key: public.pem
+      private_key_path: "{{ directory }}/{{ private_key }}"
+      public_key_path: "{{ directory }}/{{ public_key }}"
+
+  tasks:
+    - name: openssl | install
+      apt: pkg=openssl state=latest
+      tags: openssl
+
+    - name: openssl | create directory
+      file: path={{ directory }} state=directory recurse=yes owner={{ user }} group={{ user }} mode=0755
+      tags: openssl
+
+    - name: openssl | create private key
+      command: openssl genrsa -out {{ private_key_path }} {{ key_size }} creates={{ private_key_path }}
+      tags: openssl
+
+    - name: openssl | check private key
+      file: path={{ private_key_path }} owner={{ user }} group={{ user }} mode=0600
+      tags: openssl
+
+    - name: openssl | create public key
+      command: openssl rsa -in {{ private_key_path }} -pubout -out {{ public_key_path }} creates={{ public_key_path }}
+      tags: openssl
+
+    - name: openssl | check public key
+      file: path={{ public_key_path }} owner={{ user }} group={{ group }} mode=0600
+      tags: openssl
