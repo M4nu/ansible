@@ -14,6 +14,16 @@
       action: shell ufw --force reset
       tags: ufw
 
+    - name: ufw | disable ping
+      lineinfile: dest=/etc/ufw/before.rules regexp="icmp-type {{ item }}" line="-A ufw-before-input -p icmp --icmp-type {{ item }} -j DROP" backup=yes
+      with_items:
+        - destination-unreachable
+        - source-quench
+        - time-exceeded
+        - parameter-problem
+        - echo-request
+      tags: ufw
+
     - name: ufw | configure
       action: shell ufw {{ item }}
       with_items: ${rules}
