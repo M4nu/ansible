@@ -24,6 +24,16 @@
         - echo-request
       tags: ufw
 
+    - name: ufw | disable ipv6 ping
+      lineinfile: dest=/etc/ufw/before6.rules regexp="icmpv6-type {{ item }}" line="-A ufw6-before-input -p icmpv6 --icmpv6-type {{ item }} -j DROP" backup=yes
+      with_items:
+        - destination-unreachable
+        - packet-too-big
+        - time-exceeded
+        - parameter-problem
+        - echo-request
+      tags: ufw
+
     - name: ufw | configure
       action: shell ufw {{ item }}
       with_items: rules
