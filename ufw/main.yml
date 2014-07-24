@@ -4,6 +4,18 @@
   vars:
     rules:
       - allow ssh/tcp
+    ip: "{{ ansible_eth0.ipv4.address.split('.') }}"
+    ip_prefix: "{{ ip[0] }}.{{ ip[1] }}.{{ ip[2] }}"
+    ovh_hosts:
+        - 213.186.50.98 #proxy.ovh.net
+        - 213.186.45.4  #proxy.p19.ovh.net
+        - 213.251.184.9 #proxy.rbx.ovh.net
+        - 37.59.0.235   #proxy.sbg.ovh.net
+        - 8.33.137.2    #proxy.bhs.ovh.net
+        - 213.186.33.13 #ping.ovh.net
+        - "{{ ip_prefix }}.249"
+        - "{{ ip_prefix }}.250"
+        - "{{ ip_prefix }}.251"
 
   tasks:
     - name: ufw | install
@@ -12,6 +24,11 @@
 
     - name: ufw | reset
       action: shell ufw --force reset
+      tags: ufw
+
+    - name: ufw | allow ovh ping
+      lineinfile: dest=/etc/ufw/before.rules regexp="{{ item }}" line="-A ufw-before-input -p icmp -s {{ item }} -j ACCEPT" insertafter="^# ok icmp codes" backup=yes
+      with_items: ovh_hosts
       tags: ufw
 
     - name: ufw | disable ping
