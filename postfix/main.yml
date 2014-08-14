@@ -8,6 +8,7 @@
     inet_interfaces: loopback-only
     aliases: []
     smtp_bind_address: ""
+    inet_protocols: all
 
   tasks:
     - name: postfix | install
@@ -24,6 +25,11 @@
           - { regexp: "^inet_interfaces", line: "inet_interfaces = {{ inet_interfaces }}" }
           - { regexp: "^virtual_maps =", line: "virtual_maps = hash:/etc/aliases" }
       notify: reload postfix
+      tags: postfix
+
+    - name: postfix | configure
+      lineinfile: dest=/etc/postfix/main.cf regexp="^inet_protocols=" line="inet_protocols={{ inet_protocols }}" backup=yes
+      notify: restart postfix
       tags: postfix
 
     - name: postfix | setup aliases
@@ -52,3 +58,6 @@
 
     - name: reload postfix
       service: name=postfix state=reloaded
+
+    - name: restart postfix
+      service: name=postfix state=restarted
