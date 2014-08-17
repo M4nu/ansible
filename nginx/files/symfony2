@@ -8,6 +8,8 @@ location @maintenance {
     break;
 }
 
+rewrite ^/app\.php/?(.*)$ /$1 permanent;
+
 location / {
     try_files $uri @rewriteapp;
 }
