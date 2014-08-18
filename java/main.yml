@@ -1,7 +1,23 @@
 ---
 - hosts: db
 
+  vars:
+    version: 8
+
   tasks:
-    - name: java | install
-      apt: pkg=openjdk-7-jre state=latest update_cache=yes
+    - name: java | add repository
+      apt_repository: repo="deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" update_cache=yes
       tags: java
+
+    - name: java | install repository
+      apt_key: id=EEA14886 keyserver=keyserver.ubuntu.com
+      tags: java
+
+    - name: java | accept license
+      debconf: name="oracle-java7-installer" question="shared/accepted-oracle-license-v1-1" value="true" vtype="select"
+      tags: java
+
+    - name: java | install
+      apt: pkg=oracle-java{{ version }}-installer force=yes
+      tags: java
+
