@@ -2,22 +2,21 @@
 - hosts: db
 
   vars:
-    version: 0.90.9
+    version: 1.3
 
   tasks:
-    - name: elasticsearch | download
-      get_url: url=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ version }}.deb dest=/tmp/elasticsearch-{{ version }}.deb
+    - name: elasticsearch | add repository key
+      apt_key: url=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+      tags: elasticsearch
+
+    - name: elasticsearch | add repository
+      apt_repository: repo='deb http://packages.elasticsearch.org/elasticsearch/{{ version }}/debian stable main' update_cache=yes
       tags: elasticsearch
 
     - name: elasticsearch | install
-      command: dpkg -i /tmp/elasticsearch-{{ version }}.deb
-      notify: restart elasticsearch
+      apt: pkg=elasticsearch state=latest update_cache=yes
       tags: elasticsearch
 
     - name: elasticsearch | ensure service is running
       service: name=elasticsearch state=started
       tags: elasticsearch
-
-  handlers:
-    - name: restart elasticsearch
-      service: name=elasticsearch state=restarted
