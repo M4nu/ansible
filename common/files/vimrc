@@ -1,0 +1,13 @@
+syntax on
+
+set number
+set mouse=a
+set hlsearch
+set incsearch
+set smartcase
+set ignorecase
+
+set tabstop=4 shiftwidth=4 expandtab
+
+filetype plugin on
+filetype indent on

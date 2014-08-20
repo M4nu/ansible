@@ -27,3 +27,11 @@
     - name: common | copy bash config files
       copy: src=files/aliases.sh dest=/etc/profile.d/aliases.sh
       tags: common
+
+    - name: common | set vim as default editor
+      command: update-alternatives --set editor /usr/bin/vim.basic
+      tags: common
+
+    - name: common | configure vim
+      copy: src=files/vimrc dest=/etc/vim/vimrc.local
+      tags: common
