@@ -9,7 +9,6 @@
     targets: []
     tmp_dir: /tmp
     executable: /usr/bin/backup
-    ncftp: false
     full_time: 1W
     remove_time: 1M
 
@@ -27,9 +26,4 @@
 
     - name: duplicity | install cron
       cron: name="duplicity" user="root" minute="0" hour="4" job="nice -n 19 ionice -c2 -n7 {{ executable }} >> /var/log/duplicity.log"
-      tags: duplicity
-
-    - name: duplicity | install ncftp
-      apt: pkg=ncftp state=latest update_cache=yes
-      when: ncftp
       tags: duplicity
