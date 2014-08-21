@@ -34,3 +34,10 @@ location ~ ^/(app|app_dev|config)\.php(/|$) {
     proxy_buffers 4 256k;
     proxy_busy_buffers_size 256k;
 }
+
+location ~ ^/media/cache {
+    try_files $uri @rewriteapp;
+
+    add_header Cache-Control "public";
+    expires max;
+}
