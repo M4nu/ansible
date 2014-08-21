@@ -40,4 +40,10 @@ location ~ ^/media/cache {
 
     add_header Cache-Control "public";
     expires max;
+    access_log /dev/null;
+}
+
+location ~* \.(jpg|jpeg|gif|png|svg|css|js|ico|ttf|otf|woff|mp3)$ {
+    expires max;
+    access_log /dev/null;
 }
