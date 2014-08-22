@@ -16,7 +16,7 @@
       tags: mongodb
 
     - name: mongodb | install
-      apt: pkg=mongodb-10gen state=latest update_cache=yes
+      apt: pkg=mongodb-org state=latest update_cache=yes
       ignore_errors: true
       tags: mongodb
 
