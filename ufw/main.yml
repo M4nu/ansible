@@ -23,7 +23,7 @@
       tags: ufw
 
     - name: ufw | reset
-      action: shell ufw --force reset
+      command: ufw --force reset
       tags: ufw
 
     - name: ufw | allow ovh ping
@@ -52,12 +52,12 @@
       tags: ufw
 
     - name: ufw | configure
-      action: shell ufw {{ item }}
+      command: ufw {{ item }}
       with_items: rules
       tags: ufw
 
     - name: ufw | enable
-      action: shell ufw --force enable
+      command: ufw --force enable
       tags: ufw
 
     - name: ufw | ensure service is running
