@@ -35,3 +35,7 @@
     - name: common | configure vim
       copy: src=files/vimrc dest=/etc/vim/vimrc.local
       tags: common
+
+    - name: common | configure git
+      copy: src=files/gitconfig dest=/etc/gitconfig
+      tags: common
