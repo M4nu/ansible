@@ -4,6 +4,8 @@
   vars:
     version: 1.3
     config: []
+    default_config:
+      - { key: bootstrap.mlockall, value: "true" }
 
   tasks:
     - name: elasticsearch | add repository key
@@ -18,9 +20,19 @@
       apt: pkg=elasticsearch state=latest update_cache=yes
       tags: elasticsearch
 
+    - name: elasticsearch | configure defaults
+      lineinfile: dest=/etc/default/elasticsearch regexp="{{ item.key }}" line="{{ item.key }}={{ item.value }}" backup=yes
+      with_items:
+        - { key: ES_HEAP_SIZE, value: "{{ (ansible_memtotal_mb / 8) | int }}m" }
+        - { key: MAX_LOCKED_MEMORY, value: unlimited }
+      notify: restart elasticsearch
+      tags: elasticsearch
+
     - name: elasticsearch | configure
       lineinfile: 'dest=/etc/elasticsearch/elasticsearch.yml regexp="{{ item.key }}" line="{{ item.key }}: {{ item.value }}" backup=yes'
-      with_items: config
+      with_flattened:
+        - default_config
+        - config
       notify: restart elasticsearch
       tags: elasticsearch
 
