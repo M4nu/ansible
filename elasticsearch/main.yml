@@ -3,6 +3,7 @@
 
   vars:
     version: 1.3
+    config: []
 
   tasks:
     - name: elasticsearch | add repository key
@@ -17,6 +18,16 @@
       apt: pkg=elasticsearch state=latest update_cache=yes
       tags: elasticsearch
 
+    - name: elasticsearch | configure
+      lineinfile: 'dest=/etc/elasticsearch/elasticsearch.yml regexp="{{ item.key }}" line="{{ item.key }}: {{ item.value }}" backup=yes'
+      with_items: config
+      notify: restart elasticsearch
+      tags: elasticsearch
+
     - name: elasticsearch | ensure service is running
       service: name=elasticsearch state=started
       tags: elasticsearch
+
+  handlers:
+    - name: restart elasticsearch
+      service: name=elasticsearch state=restarted
