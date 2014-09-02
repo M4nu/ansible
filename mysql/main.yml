@@ -1,6 +1,11 @@
 ---
 - hosts: db
 
+  vars:
+    innodb_buffer_pool_size: 1G
+    query_cache_type: 1
+    query_cache_size: 128M
+
   tasks:
     - name: mysql | install python-mysqldb
       apt: pkg=python-mysqldb state=latest update_cache=yes
@@ -36,6 +41,11 @@
       mysql_db: name=test state=absent
       tags: mysql
 
+    - name: mysql | copy my.cnf config file
+      template: src=templates/my.cnf.j2 dest=/etc/mysql/conf.d/my.cnf owner=root mode=644
+      notify: restart mysql
+      tags: mysql
+
     - name: mysql | ensure service is running
       service: name=mysql state=started
       tags: mysql
@@ -45,3 +55,7 @@
       tags:
         - crontab
         - mysql
+
+  handlers:
+    - name: restart mysql
+      service: name=mysql state=restarted
