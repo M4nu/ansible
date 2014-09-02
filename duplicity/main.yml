@@ -7,7 +7,7 @@
     mongodb: false
     jackrabbit: false
     targets: []
-    tmp_dir: /tmp
+    tmp_dir: /var/backups
     executable: /usr/bin/backup
     full_time: 1W
     remove_time: 1M
@@ -21,9 +21,9 @@
       tags: duplicity
 
     - name: duplicity | copy backup script
-      template: src=templates/backup.sh.j2 dest={{ executable }} owner=root group=root mode=0700
+      template: src=templates/backup.sh.j2 dest={{ executable }} owner=root group=root mode=700
       tags: duplicity
 
     - name: duplicity | install cron
-      cron: name="duplicity" user="root" minute="0" hour="4" job="nice -n 19 ionice -c2 -n7 {{ executable }} >> /var/log/duplicity.log"
+      cron: name="duplicity" user="root" minute="0" hour="6" job="nice -n 19 ionice -c2 -n7 {{ executable }} >> /var/log/duplicity.log"
       tags: duplicity
