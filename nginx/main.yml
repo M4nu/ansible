@@ -46,7 +46,7 @@
         - vhost
 
     - name: nginx | enable virtual host
-      file: src=../sites-available/{{ item.dest }} dest=/etc/nginx/sites-enabled/{{ item.dest }} owner=root group=root state=link
+      file: src=../sites-available/{{ item.dest }} dest=/etc/nginx/sites-enabled/{{ item.dest }} owner=root group=root state=link force=yes
       with_items: vhosts
       notify: reload nginx
       tags:
