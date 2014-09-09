@@ -25,5 +25,5 @@
       tags: duplicity
 
     - name: duplicity | install cron
-      cron: name="duplicity" user="root" minute="0" hour="6" job="nice -n 19 ionice -c2 -n7 {{ executable }} >> /var/log/duplicity.log"
+      cron: name="duplicity" user="root" minute="0" hour="6" job="nice -n 20 ionice -c3 {{ executable }} >> /var/log/duplicity.log"
       tags: duplicity
