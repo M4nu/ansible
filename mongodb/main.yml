@@ -1,6 +1,10 @@
 ---
 - hosts: db
 
+  vars:
+    version: 2.6
+    old_version: "{{ version | version_compare('2.6', '<') }}"
+
   pre_tasks:
     - name: mongodb | install requirements
       apt: pkg=python-pycurl state=latest update_cache=yes
@@ -16,7 +20,7 @@
       tags: mongodb
 
     - name: mongodb | install
-      apt: pkg=mongodb-org state=latest update_cache=yes
+      apt: pkg=mongodb-{{ '10gen' if old_version | bool else 'org' }} state=latest update_cache=yes
       ignore_errors: true
       tags: mongodb
 
@@ -25,5 +29,5 @@
       tags: mongodb
 
     - name: mongodb | ensure service is running
-      service: name=mongodb state=started
+      service: name={{ 'mongodb' if old_version | bool else 'mongod' }} state=started
       tags: mongodb
