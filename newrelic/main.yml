@@ -43,3 +43,7 @@
       lineinfile: dest=/etc/newrelic/nrsysmond.cfg regexp="^license_key=" line="license_key={{ newrelic_license }}" backup=yes
       when: newrelic_license is defined
       tags: newrelic
+
+    - name: newrelic | ensure server monitor is running
+      service: name=newrelic-sysmond state=started
+      tags: newrelic
