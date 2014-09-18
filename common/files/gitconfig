@@ -2,10 +2,10 @@
 editor = vim
 
 [color]
-branch=auto
-diff=auto
-interactive=auto
-status=auto
+branch = auto
+diff = auto
+interactive = auto
+status = auto
 
 [alias]
 br = branch
@@ -14,6 +14,9 @@ cl = clone
 co = checkout
 cp = cherry-pick
 dc = diff --cached
-diff = diff --word-diff
+diff = diff --color-words=.
 lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)
 st = status
+
+[status]
+showUntrackedFiles = all
