@@ -1,0 +1,31 @@
+---
+- hosts: web
+
+  vars:
+    extensions: []
+
+  tasks:
+    - name: pecl | install
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - php-pear
+        - php5-dev
+      tags: pecl
+
+    - name: pecl | install extensions
+      command: pecl install {{ item }}
+      with_items: extensions
+      register: pecl_result
+      changed_when: "pecl_result.rc == 0"
+      failed_when: "not (('already installed' in pecl_result.stdout) or ('install ok:' in pecl_result.stdout))"
+      tags: pecl
+
+    - name: pecl | create extensions ini files
+      template: src=templates/extension.ini.j2 dest=/etc/php5/mods-available/{{ item }}.ini owner=root group=root mode=0644
+      with_items: extensions
+      tags: pecl
+
+    - name: pecl | enable extensions
+      command: php5enmod {{ item }}
+      with_items: extensions
+      tags: pecl
