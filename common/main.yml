@@ -1,6 +1,9 @@
 ---
 - hosts: all
 
+  vars:
+    timezone: UTC
+
   tasks:
     - name: common | install packages
       apt: pkg={{ item }} state=latest update_cache=yes
@@ -39,3 +42,16 @@
     - name: common | configure git
       copy: src=files/gitconfig dest=/etc/gitconfig
       tags: common
+
+    - name: common | configure timezone
+      copy: content={{ timezone }} dest=/etc/timezone owner=root group=root mode=600 backup=yes
+      notify: update timezone
+      tags: common
+
+    - name: common | configure localtime
+      file: src=/usr/share/zoneinfo/{{ timezone }} dest=/etc/localtime owner=root group=root mode=600 state=link force=yes backup=yes
+      tags: common
+
+  handlers:
+    - name: update timezone
+      command: dpkg-reconfigure --frontend noninteractive tzdata
