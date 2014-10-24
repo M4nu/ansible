@@ -44,6 +44,8 @@ location ~ ^/media {
 }
 
 location ~* \.(jpg|jpeg|gif|png|svg|css|js|ico|ttf|otf|woff|mp3)$ {
+    try_files $uri @rewriteapp;
+
     expires max;
     access_log /dev/null;
 }
