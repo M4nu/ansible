@@ -8,6 +8,7 @@
     path: "{{ base_dir }}/{{ jar }}"
     host: 127.0.0.1
     port: 8080
+    log_path: /var/log/jackrabbit
     startup_script_path: /etc/init.d/jackrabbit
 
   tasks:
@@ -30,6 +31,10 @@
       apt: pkg=curl state=latest
       tags: jackrabbit
 
+    - name: jackrabbit | create log path
+      file: path={{ log_path }} state=directory
+      tags: jackrabbit
+
     - name: jackrabbit | configure startup script
       lineinfile: dest={{ startup_script_path }} regexp="{{ item.regexp }}" line="{{ item.line }}"
       with_items:
@@ -37,6 +42,7 @@
         - { regexp: "^JACKRABBIT_JAR=", line: "JACKRABBIT_JAR=$BASEDIR/{{ jar }}" }
         - { regexp: "^JACKRABBIT_HOST=", line: "JACKRABBIT_HOST={{ host }}" }
         - { regexp: "^JACKRABBIT_PORT=", line: "JACKRABBIT_PORT={{ port }}" }
+        - { regexp: "^LOGFILE=", line: "LOGFILE={{ log_path }}/jackrabbit.log" }
       tags: jackrabbit
 
     - name: jackrabbit | remove startup script jmx config
