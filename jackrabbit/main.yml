@@ -2,7 +2,7 @@
 - hosts: db
 
   vars:
-    version: 2.6.5
+    version: 2.9.0
     base_dir: /usr/bin/jackrabbit
     jar: "jackrabbit-standalone-{{ version }}.jar"
     path: "{{ base_dir }}/{{ jar }}"
