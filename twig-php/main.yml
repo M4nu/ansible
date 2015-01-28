@@ -1,0 +1,34 @@
+---
+- hosts: web
+
+  pre_tasks:
+    - name: twig-php | install requirements
+      apt: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - gcc
+        - php5-dev
+        - git
+      tags: twig-php
+
+  tasks:
+    - name: twig-php | download
+      command: git clone https://github.com/fabpot/Twig.git chdir=/tmp creates=/tmp/Twig
+      tags: twig-php
+
+    - name: twig-php | install
+      command: "{{ item }} chdir=/tmp/Twig/ext/twig creates=/usr/lib/php5/20121212/twig.so"
+      with_items:
+        - phpize
+        - ./configure
+        - make
+        - make install
+      tags: twig-php
+
+    - name: twig-php | create twig.ini
+      copy: src=files/twig.ini dest=/etc/php5/mods-available
+      tags: twig-php
+
+    - name: twig-php | enable extension
+      command: php5enmod twig
+      changed_when: false
+      tags: twig-php
