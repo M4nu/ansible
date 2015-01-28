@@ -37,7 +37,7 @@
       tags: elasticsearch
 
     - name: elasticsearch | ensure service is running
-      service: name=elasticsearch state=started
+      service: name=elasticsearch state=started enabled=yes
       tags: elasticsearch
 
   handlers:
