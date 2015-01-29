@@ -3,7 +3,6 @@
 
   vars:
     myhostname: "{{ ansible_fqdn }}"
-    myorigin: \\$mydomain
     relayhost: ""
     inet_interfaces: loopback-only
     aliases: []
@@ -18,12 +17,19 @@
     - name: postfix | configure
       lineinfile: dest=/etc/postfix/main.cf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
       with_items:
-          - { regexp: "^myhostname", line: "myhostname = {{ myhostname }}" }
-          - { regexp: "^myorigin", line: "myorigin = {{ myorigin }}" }
+          - { regexp: "^myorigin", line: "myorigin = /etc/mailname" }
+          - { regexp: "^masquerade_domains", line: "masquerade_domains = {{ tld }}" }
           - { regexp: "^mydestination", line: "mydestination = " }
           - { regexp: "^relayhost", line: "relayhost = {{ relayhost }}" }
           - { regexp: "^inet_interfaces", line: "inet_interfaces = {{ inet_interfaces }}" }
           - { regexp: "^virtual_maps =", line: "virtual_maps = hash:/etc/aliases" }
+      notify: reload postfix
+      tags: postfix
+
+    - name: postfix | configure
+      lineinfile: dest=/etc/postfix/main.cf regexp="{{ item }}" backup=yes state=absent
+      with_items:
+          - "^myhostname"
       notify: reload postfix
       tags: postfix
 
