@@ -1,0 +1,11 @@
+---
+- hosts: db
+
+  tasks:
+    - name: memcached | install
+      apt: name=memcached state=latest update_cache=yes
+      tags: memcached
+
+    - name: memcached | ensure service is running
+      service: name=memcached state=started
+      tags: memcached
