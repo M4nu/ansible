@@ -5,6 +5,7 @@
     innodb_buffer_pool_size: 1G
     query_cache_type: 1
     query_cache_size: 128M
+    max_connections: 151
 
   tasks:
     - name: mysql | install python-mysqldb
