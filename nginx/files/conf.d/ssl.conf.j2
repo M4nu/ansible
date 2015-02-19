@@ -1,2 +1,18 @@
-ssl_certificate      /etc/nginx/conf/ssl-unified.crt;
-ssl_certificate_key  /etc/nginx/conf/ssl.key;
+ssl_certificate           /etc/nginx/conf/ssl-unified.crt;
+ssl_certificate_key       /etc/nginx/conf/ssl.key;
+ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+
+ssl_prefer_server_ciphers on;
+ssl_ciphers               "ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS";
+
+ssl_dhparam {{ ssl_forward_secrecy_key_path }};
+
+ssl_session_cache   shared:SSL:20m;
+ssl_session_timeout 1h;
+
+ssl_stapling        on;
+ssl_stapling_verify on;
+resolver            8.8.4.4 8.8.8.8 valid=300s;
+resolver_timeout    10s;
+
+add_header X-Content-Type-Options nosniff;

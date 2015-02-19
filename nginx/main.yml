@@ -2,6 +2,8 @@
 - hosts: web
   vars:
     ssl: false
+    ssl_forward_secrecy_key_path: /etc/nginx/conf/dhparam.pem
+    ssl_forward_secrecy_key_length: 2048
     upload_max_file_size: 2M
     large_client_header_buffers: 4 8k
     user: www-data
@@ -15,6 +17,21 @@
     - name: nginx | copy config file
       template: src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root group=root mode=0644
       notify: reload nginx
+      tags: nginx
+
+    - name: nginx | install openssl
+      apt: pkg=openssl state=latest update_cache=yes
+      when: ssl
+      tags: nginx
+
+    - name: nginx | generate ssl forward secrecy key
+      command: openssl dhparam -out {{ ssl_forward_secrecy_key_path }} {{ ssl_forward_secrecy_key_length }} creates={{ ssl_forward_secrecy_key_path }}
+      when: ssl
+      tags: nginx
+
+    - name: nginx | check ssl forward secrecy key
+      file: path={{ ssl_forward_secrecy_key_path }} owner=root group=root mode=0600
+      when: ssl
       tags: nginx
 
     - name: nginx | copy ssl config file
