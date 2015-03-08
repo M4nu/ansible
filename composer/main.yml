@@ -10,5 +10,5 @@
       tags: composer
 
     - name: composer | install update cron
-      cron: name="update composer" user="root" special_time="weekly" job="{{ path }} self-update > /dev/null"
+      cron: name="update composer" user="root" special_time="weekly" job="{{ path }} self-update --quiet"
       tags: composer
