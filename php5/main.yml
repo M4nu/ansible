@@ -19,5 +19,5 @@
       tags: php5
 
     - name: php5 | configure opcache
-      copy: src=files/opcache.ini dest=/etc/php5/mods-available/opcache.ini backup=yes
+      template: src=templates/opcache.ini.j2 dest=/etc/php5/mods-available/opcache.ini backup=yes
       tags: php5

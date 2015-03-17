@@ -1,0 +1,8 @@
+;configuration for php ZendOpcache module
+zend_extension=opcache.so
+opcache.validate_timestamps=0
+opcache.enable_file_override=0
+opcache.memory_consumption={{ (ansible_memtotal_mb / 64) | int }}
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=8000
+opcache.fast_shutdown=1
