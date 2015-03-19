@@ -1,0 +1,17 @@
+---
+- hosts: web
+
+  vars:
+    var_size: 32M
+
+  tasks:
+    - name: php5-xcache | install
+      apt: name=php5-xcache state=latest update_cache=yes
+      tags: php5-xcache
+
+    - name: php5-xcache | configure
+      lineinfile: dest=/etc/php5/mods-available/xcache.ini regexp="{{ item.key }}" line="{{ item.key }}={{ item.value }}" backup=yes
+      with_items:
+        - { key: "xcache.var_size", value: "{{ var_size }}" }
+        - { key: "xcache.var_count", value: "{{ ansible_processor_cores }}" }
+      tags: php5-xcache
