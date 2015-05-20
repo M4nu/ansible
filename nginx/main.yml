@@ -8,6 +8,7 @@
     large_client_header_buffers: 4 8k
     user: www-data
     vhosts: []
+    limit_per_ip: 5
 
   tasks:
     - name: nginx | install

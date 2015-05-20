@@ -33,6 +33,9 @@ location ~ ^/(app|app_dev|config)\.php(/|$) {
     proxy_buffer_size 128k;
     proxy_buffers 4 256k;
     proxy_busy_buffers_size 256k;
+
+    limit_conn conn_limit_per_ip {{ limit_per_ip }};
+    limit_req zone=req_limit_per_ip burst={{ limit_per_ip * 2 }} nodelay;
 }
 
 location ~ ^/media {
