@@ -1,6 +1,9 @@
 ---
 - hosts: web
 
+  vars:
+    - tmp_jail: tmp/jail.conf
+
   tasks:
     - name: fail2ban | install
       apt: pkg=fail2ban state=latest update_cache=yes
@@ -9,3 +12,21 @@
     - name: fail2ban | ensure service is running
       service: name=fail2ban state=started
       tags: fail2ban
+
+    - name: fail2ban | copy nginx config file
+      copy: src=files/nginx-req-limit.conf dest=/etc/fail2ban/filter.d/nginx-req-limit.conf owner=root group=root mode=0644
+      notify: reload fail2ban
+      tags: fail2ban
+
+    - name: fail2ban | prepare jail config file
+      fetch: src=/etc/fail2ban/jail.conf dest={{ tmp_jail }} flat=yes
+      tags: fail2ban
+
+    - name: fail2ban | copy jail config file
+      template: src=templates/jail.local.j2 dest=/etc/fail2ban/jail.local
+      notify: reload fail2ban
+      tags: fail2ban
+
+  handlers:
+    - name: reload fail2ban
+      service: name=fail2ban state=reloaded
