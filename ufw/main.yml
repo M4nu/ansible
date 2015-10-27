@@ -7,12 +7,18 @@
     ip: "{{ ansible_eth0.ipv4.address.split('.') }}"
     ip_prefix: "{{ ip[0] }}.{{ ip[1] }}.{{ ip[2] }}"
     ovh_hosts:
-        - 213.186.50.98 #proxy.ovh.net
-        - 213.186.45.4  #proxy.p19.ovh.net
-        - 213.251.184.9 #proxy.rbx.ovh.net
-        - 37.59.0.235   #proxy.sbg.ovh.net
-        - 8.33.137.2    #proxy.bhs.ovh.net
-        - 213.186.33.13 #ping.ovh.net
+        - 213.186.50.98 # proxy.ovh.net
+        - 37.187.231.251
+        - 213.186.33.62 # a2.ovh.net
+        - 92.222.184.0/24
+        - 92.222.185.0/24
+        - 92.222.186.0/24
+        - 167.114.37.0/24
+        - 213.186.45.4 # proxy.p19.ovh.net
+        - 213.251.184.9 # proxy.rbx.ovh.net
+        - 37.59.0.235 # proxy.sbg.ovh.net
+        - 8.33.137.2 # proxy.bhs.ovh.net
+        - 213.186.33.13 # ping.ovh.net
         - "{{ ip_prefix }}.249"
         - "{{ ip_prefix }}.250"
         - "{{ ip_prefix }}.251"
