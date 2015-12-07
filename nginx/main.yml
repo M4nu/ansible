@@ -11,6 +11,17 @@
     limit_per_ip: 5
 
   tasks:
+    - name: nginx | add main repository
+      apt_repository: repo='{{ item }}' update_cache=yes
+      with_items:
+        - deb http://nginx.org/packages/mainline/debian/ {{ ansible_distribution_release }} nginx
+        - deb-src http://nginx.org/packages/mainline/debian/ {{ ansible_distribution_release }} nginx
+      tags: nginx
+
+    - name: nginx | install repository key
+      apt_key: url=http://nginx.org/keys/nginx_signing.key
+      tags: nginx
+
     - name: nginx | install
       apt: pkg=nginx state=latest update_cache=yes
       tags: nginx
