@@ -20,3 +20,6 @@ st = status
 
 [status]
 showUntrackedFiles = all
+
+[help]
+autocorrect = 1
