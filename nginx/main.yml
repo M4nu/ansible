@@ -59,6 +59,21 @@
       notify: reload nginx
       tags: nginx
 
+    - name: nginx | create scripts directory
+      file: dest=/etc/nginx/scripts owner=www-data group=www-data state=directory
+      tags: nginx
+
+    - name: nginx | copy scripts files
+      template: src={{ item }} dest=/etc/nginx/scripts/ owner=root group=root mode=0755
+      with_fileglob:
+        - "files/scripts/*"
+      tags: nginx
+
+    - cron: name="refresh stopspamforum" user="root" hour="0,8,16" minute="0" job="/etc/nginx/scripts/stopforumspam > /dev/null"
+      tags:
+        - nginx
+        - crontab
+
     - name: nginx | disable default virtual host
       file: dest=/etc/nginx/sites-enabled/default state=absent
       notify: reload nginx

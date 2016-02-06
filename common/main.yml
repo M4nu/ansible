@@ -16,6 +16,7 @@
          - bash-completion
          - sudo
          - ntp
+         - unzip
       tags: common
 
     - name: common | set hostname

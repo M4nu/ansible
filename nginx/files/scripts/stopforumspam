@@ -1,0 +1,43 @@
+#!/bin/bash
+# Block IPs based upon stopforumspam.com's block list.
+# Brett Profitt
+# Released under the GPL 3.0.
+#
+# -------------------------------------------------------------------------
+# Bits of this file inspired by:
+#
+# Copyright (c) 2008 nixCraft project <http://cyberciti.biz/fb/>
+# This script is licensed under GNU GPL version 2.0 or above
+# -------------------------------------------------------------------------
+# tmp file
+DIR="/tmp/stopforumspam.$$"
+ZIP_FILE="$DIR/ips.zip"
+
+# nginx config file - path to nginx drop conf file
+OUT="/etc/nginx/conf.d/stopforumspam.conf"
+
+URL='http://www.stopforumspam.com/downloads/bannedips.zip'
+
+# remove old file
+[[ -d $DIR ]] && /bin/rm -f $DIR
+
+# emply nginx deny file
+>$OUT
+
+mkdir $DIR
+cd $DIR
+
+# get database
+/usr/bin/wget --output-document=$ZIP_FILE "$URL"
+
+unzip $ZIP_FILE
+
+# format in nginx deny netblock; format
+# this includes 255.255.255.255, which nginx doesn't like, so
+# we need to parse that out
+cat bannedips.csv | sed 's/255\.255\.255\.255,//g' | sed -E 's/([0-9.]*),?/deny \1;\n/g' >>$OUT
+
+# reload nginx
+/bin/sync && /usr/sbin/nginx -s reload
+
+rm -rf $DIR
