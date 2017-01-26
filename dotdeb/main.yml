@@ -33,6 +33,14 @@
       when: php_version == 5.5
       tags: dotdeb
 
+    - name: dotdeb | add php 7 repository
+      apt_repository: repo='{{ item }}' update_cache=yes
+      with_items:
+        - deb http://packages.dotdeb.org jessie all
+        - deb-src http://packages.dotdeb.org jessie all
+      when: php_version == 7
+      tags: dotdeb
+
     - name: dotdeb | install key
       apt_key: url=http://www.dotdeb.org/dotdeb.gpg
       tags: dotdeb
