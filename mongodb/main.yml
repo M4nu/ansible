@@ -3,7 +3,7 @@
 
   vars:
     version: 2.6
-    old_version: "{{ version | version_compare('2.6', '<') }}"
+    old_version: false
 
   pre_tasks:
     - name: mongodb | install requirements
