@@ -18,18 +18,12 @@
       apt_repository: repo='deb http://apt.newrelic.com/debian/ newrelic non-free' update_cache=yes
       tags: newrelic
 
-    - name: newrelic | install
-      apt: pkg=newrelic-php5 state=latest update_cache=yes
-      tags:
-        - newrelic
-        - php5
-
     - name: newrelic | configure appname
-      lineinfile: dest=/etc/php5/mods-available/newrelic.ini regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
+      lineinfile: dest=/etc/php/7.0/mods-available/newrelic.ini regexp="newrelic.appname = " line='newrelic.appname = "{{ appname }}"' backup=yes
       tags: newrelic
 
     - name: newrelic | configure license
-      lineinfile: dest=/etc/php5/mods-available/newrelic.ini regexp="newrelic.license = " line='newrelic.license = "{{ newrelic_license }}"' backup=yes
+      lineinfile: dest=/etc/php/7.0/mods-available/newrelic.ini regexp="newrelic.license = " line='newrelic.license = "{{ newrelic_license }}"' backup=yes
       when: newrelic_license is defined
       tags: newrelic
 
