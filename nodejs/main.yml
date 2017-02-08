@@ -1,26 +1,57 @@
 ---
 - hosts: web
 
+  vars:
+    node_version: "6.9.5"
+    node_prefix: "node-v{{ node_version }}"
+    node_tarball: "{{ node_prefix }}.tar.gz"
+    node_path: "/usr/local"
+    packages: []
+
   tasks:
-    - name: Test | NPM is installed
-      shell: npm -v
-      register: npm_installed
+    - name: nodejs | check installation
+      shell: /usr/bin/test "$(node -v 2> /dev/null)" = v{{ node_version }}
+      register: wanted_version_installed
       ignore_errors: true
       tags: nodejs
 
-    - name: NodeJS | Install curl
-      apt: name=curl state=present
+    - name: nodejs | install prerequisite
+      apt: pkg={{ item }} update_cache=yes
+      with_items:
+        - make
+        - gcc
+        - g++
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
 
-    - name: NodeJS | Prepare for installation
-      raw: "curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -"
-      sudo: true
-      when: npm_installed|failed
+    - name: nodejs | download
+      get_url: url=http://nodejs.org/dist/v{{ node_version }}/{{ node_tarball }} dest=/tmp/
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
 
-    - name: NodeJS | Install NodeJS
-      apt: name=nodejs state=present
+    - name: nodejs | extract
+      command: tar zxf {{ node_tarball }} chdir=/tmp
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
 
-    - name: NodeJS | Install build-essentials package
-      apt: name=build-essential state=present
+    - name: nodejs | configure
+      shell: python ./configure --prefix={{ node_path }} chdir=/tmp/{{ node_prefix }}
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
+
+    - name: nodejs | compile
+      shell: make chdir=/tmp/{{ node_prefix }}/
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
+
+    - name: nodejs | install
+      shell: make install chdir=/tmp/{{ node_prefix }}/
+      when: wanted_version_installed.rc == 1
+      tags: nodejs
+
+    - name: nodejs | add NODE_PATH environment variable
+      lineinfile: dest=/etc/environment regexp='^export NODE_PATH=' line='export NODE_PATH=/usr/local/lib/node_modules'
+      tags: nodejs
 
     - name: nodejs | install packages
       npm: name={{ item }} global=yes
