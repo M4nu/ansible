@@ -1,0 +1,59 @@
+---
+- hosts: web
+  vars:
+    upload_max_file_size: 2M
+    max_input_vars: 1000
+    memory_limit: 64M
+    listen_user: www-data
+    listen_group: www-data
+
+  tasks:
+    - name: php7.0-fpm | install
+      apt: pkg=php7.0-fpm state=latest update_cache=yes
+      tags: php7.0-fpm
+
+    - name: php7.0-fpm | configure php.ini
+      lineinfile: dest=/etc/php/7.0/fpm/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
+        - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
+        - { regexp: "expose_php =", line: "expose_php = Off" }
+        - { regexp: "memory_limit =", line: "memory_limit = {{ memory_limit }}" }
+        - { regexp: "display_errors =", line: "display_errors = Off" }
+        - { regexp: "upload_max_filesize =", line: "upload_max_filesize = {{ upload_max_file_size }}" }
+        - { regexp: "post_max_size =", line: "post_max_size = {{ upload_max_file_size }}" }
+        - { regexp: "max_input_vars =", line: "max_input_vars = {{ max_input_vars }}" }
+      notify: reload php7.0-fpm
+      tags: php7.0-fpm
+
+    - name: php7.0-fpm | copy clear-opcode script
+      copy: src=files/clear-opcode dest=/etc/init.d/clear-opcode owner=root group=root mode=0755
+      tags: php7.0-fpm
+
+    - name: php7.0-fpm | update listen config
+      lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "listen.owner =", line: "listen.owner = {{ listen_user }}" }
+        - { regexp: "listen.group =", line: "listen.group = {{ listen_group }}" }
+        - { regexp: "listen.mode =", line: "listen.mode = 0660" }
+      notify: reload php7.0-fpm
+      tags: php7.0-fpm
+
+    - name: php7.0-fpm | update user and group
+      lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "^user =", line: "user = vagrant" }
+        - { regexp: "^group =", line: "group = vagrant" }
+      when: vagrant is defined
+      notify: reload php7.0-fpm
+      tags:
+        - php7.0-fpm
+        - vagrant
+
+    - name: php7.0-fpm | ensure service is running
+      service: name=php7.0-fpm state=started
+      tags: php7.0-fpm
+
+  handlers:
+    - name: reload php7.0-fpm
+      service: name=php7.0-fpm state=reloaded

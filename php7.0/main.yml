@@ -1,0 +1,23 @@
+---
+- hosts: web
+
+  vars:
+    extensions: []
+
+  tasks:
+    - name: php7.0 | install
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - php7.0-common
+        - php7.0-cgi
+        - php7.0
+      tags: php7.0
+
+    - name: php7.0 | install extensions
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items: extensions
+      tags: php7.0
+
+    - name: php7.0 | configure opcache
+      template: src=templates/opcache.ini.j2 dest=/etc/php/7.0/mods-available/opcache.ini backup=yes
+      tags: php7.0

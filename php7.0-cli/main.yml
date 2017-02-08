@@ -1,0 +1,14 @@
+---
+- hosts: web
+
+  tasks:
+    - name: php7.0-cli | install
+      apt: pkg=php7.0-cli state=latest update_cache=yes
+      tags: php7.0-cli
+
+    - name: php7.0-cli | configure php.ini
+      lineinfile: dest=/etc/php/7.0/cli/php.ini  regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+      with_items:
+        - { regexp: "date.timezone", line: "date.timezone = 'UTC'" }
+        - { regexp: "short_open_tag =", line: "short_open_tag = Off" }
+      tags: php7.0-cli

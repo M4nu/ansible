@@ -1,0 +1,11 @@
+### BEGIN INIT INFO
+# Provides:          clear-opcode
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Clear php opcode
+# Description:       Clear php opcode by restarting php7.0-fpm
+### END INIT INFO
+
+service php7.0-fpm restart

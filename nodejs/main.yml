@@ -2,7 +2,7 @@
 - hosts: web
 
   vars:
-    node_version: "0.10.24"
+    node_version: "6.9.5"
     node_prefix: "node-v{{ node_version }}"
     node_tarball: "{{ node_prefix }}.tar.gz"
     node_path: "/usr/local"

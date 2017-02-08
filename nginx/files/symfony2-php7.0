@@ -1,0 +1,54 @@
+if (-f $document_root/maintenance.html) {
+    return 503;
+}
+
+error_page 503 @maintenance;
+location @maintenance {
+    rewrite ^(.*)$ /maintenance.html last;
+    break;
+}
+
+rewrite ^/app\.php/?(.*)$ /$1 permanent;
+
+location / {
+    try_files $uri @rewriteapp;
+}
+
+location @rewriteapp {
+    rewrite ^(.*)$ /app.php/$1 last;
+}
+
+location ~ ^/(app|app_dev|config)\.php(/|$) {
+    include fastcgi_params;
+
+    fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param HTTPS $https;
+
+    fastcgi_buffer_size 128k;
+    fastcgi_buffers 4 256k;
+    fastcgi_busy_buffers_size 256k;
+
+    proxy_buffer_size 128k;
+    proxy_buffers 4 256k;
+    proxy_busy_buffers_size 256k;
+
+    limit_conn conn_limit_per_ip {{ limit_per_ip }};
+    limit_req zone=req_limit_per_ip burst={{ limit_per_ip * 2 }} nodelay;
+}
+
+location ~ ^/media {
+    try_files $uri @rewriteapp;
+
+    add_header Cache-Control "public";
+    expires max;
+    access_log /dev/null;
+}
+
+location ~* \.(jpg|jpeg|gif|png|svg|css|js|ico|ttf|otf|woff|mp3)$ {
+    try_files $uri @rewriteapp;
+
+    expires max;
+    access_log /dev/null;
+}
