@@ -2,7 +2,7 @@
 - hosts: all
 
   vars:
-    version: 1.3.9
+    version: 2.5.5
     directory: "lynis-{{ version }}"
     archive: "{{ directory }}.tar.gz"
     dest: /etc/lynis
@@ -22,6 +22,6 @@
       tags: lynis
 
     - name: lynis | install cron job
-      cron: name="lynis" user="root" special_time="daily" job="cd {{ dest }} && ./lynis -c --auditor "automated" --cronjob --quiet"
+      cron: name="lynis" user="root" special_time="daily" job="cd {{ dest }} && ./lynis audit system --cronjob --quiet"
       when: cron
       tags: lynis
